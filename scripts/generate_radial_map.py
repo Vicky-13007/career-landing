@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
 import re
+import os 
 
 # Load CSV
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
@@ -171,3 +172,53 @@ with open(html_path, "w") as f:
     f.write(content)
 
 print(f"✔️ Clean clickable category map saved to {html_path}")
+
+
+# Path: categories/ folder inside career_landing
+category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
+os.makedirs(category_dir, exist_ok=True)
+
+# Get unique categories and normalize
+unique_categories = top_categories["Position_Category"].unique()
+normalized_map = {
+    cat: normalize_name(cat) for cat in unique_categories
+}
+
+# HTML template function
+def generate_html(category_name):
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{category_name}</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background-color: #ffffff;
+            color: #333333;
+        }}
+        h1 {{
+            color: #2c3e50;
+        }}
+        p {{
+            font-size: 1.1rem;
+        }}
+    </style>
+</head>
+<body>
+    <h1>{category_name}</h1>
+    <p>This page will include detailed information about the <strong>{category_name}</strong> category.</p>
+    <p>You can describe example job roles, required skills, career progression, and domain-specific insights here.</p>
+</body>
+</html>
+"""
+
+# Generate pages
+for original, normalized in normalized_map.items():
+    html = generate_html(original)
+    file_path = os.path.join(category_dir, f"{normalized}.html")
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(html)
+
+print(f"✅ Created {len(unique_categories)} category pages in: {category_dir}")
