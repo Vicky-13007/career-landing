@@ -12,6 +12,7 @@
       overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
     }
+
     #radial-wrapper {
       position: relative;
       width: 100vw;
@@ -20,35 +21,61 @@
       align-items: center;
       justify-content: center;
     }
+
     #map-container {
       position: relative;
       z-index: 1;
     }
+
     .corner-icon {
       position: absolute;
       width: 80px;
       opacity: 0.9;
       z-index: 2;
     }
+
     .top-left    { top: 20px; left: 20px; }
     .top-right   { top: 20px; right: 20px; }
     .bottom-left { bottom: 20px; left: 20px; }
     .bottom-right{ bottom: 20px; right: 20px; }
+
     .lottie {
       width: 100px;
       height: 100px;
+    }
+
+    /* Left and right floating images */
+    .static-img {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 140px;
+      height: auto;
+      z-index: 1;
+      opacity: 0.9;
+      animation: floatY 3s ease-in-out infinite alternate;
+    }
+
+    .left-img  { left: 20px; }
+    .right-img { right: 20px; }
+
+    @keyframes floatY {
+      from { transform: translateY(-52%); }
+      to   { transform: translateY(-48%); }
     }
 
     /* Hover glow and pulse for radial map points */
     .js-plotly-plot .scatterlayer .trace .points path {
       transition: filter 0.3s ease, transform 0.3s ease;
     }
+
     .js-plotly-plot .scatterlayer .trace .points path:hover {
       filter: drop-shadow(0 0 8px #00faff);
       transform: scale(1.2);
       animation: pulse 1s infinite;
       cursor: pointer;
     }
+
     @keyframes pulse {
       0%   { filter: drop-shadow(0 0 6px #00faff); }
       50%  { filter: drop-shadow(0 0 12px #00faff); }
@@ -96,21 +123,25 @@
     autoplay>
 </lottie-player>
 
-
 <body>
   <div id="radial-wrapper">
-    <!-- Lottie Icons in 4 corners -->
+
+    <!-- Floating left and right images -->
+    <img src="images/healthfacility.jpg" alt="Health Facility" class="static-img left-img">
+    <img src="images/healthworkers.jpg" alt="Health Workers" class="static-img right-img">
+
+    <!-- Lottie quadrant icons -->
     <div class="corner-icon top-left" id="icon-classification"></div>
     <div class="corner-icon top-right" id="icon-him"></div>
     <div class="corner-icon bottom-left" id="icon-informatics"></div>
     <div class="corner-icon bottom-right" id="icon-analysis"></div>
 
     <!-- Plotly radial map gets injected here -->
-    <!-- Plotly chart will render here -->
+    <!--RADIAL_MAP-->
+
   </div>
 
 <script>
-  // Load quadrant icons
   function loadLottie(id, path) {
     lottie.loadAnimation({
       container: document.getElementById(id),
@@ -120,14 +151,14 @@
       path: path
     });
   }
-  loadLottie('icon-classification', 'https://assets6.lottiefiles.com/packages/lf20_kq5rGs.json');   // hospital
-  loadLottie('icon-him',           'https://assets6.lottiefiles.com/packages/lf20_dgzrnsns.json');   // folder
-  loadLottie('icon-informatics',   'https://assets1.lottiefiles.com/private_files/lf30_bx2gk4ux.json'); // dashboard
-  loadLottie('icon-analysis',      'https://assets9.lottiefiles.com/packages/lf20_czdlfgiv.json');   // chart
 
-  // Enable dot click navigation
+  loadLottie('icon-classification', 'https://assets6.lottiefiles.com/packages/lf20_kq5rGs.json');
+  loadLottie('icon-him',           'https://assets6.lottiefiles.com/packages/lf20_dgzrnsns.json');
+  loadLottie('icon-informatics',   'https://assets1.lottiefiles.com/private_files/lf30_bx2gk4ux.json');
+  loadLottie('icon-analysis',      'https://assets9.lottiefiles.com/packages/lf20_czdlfgiv.json');
+
   document.addEventListener("DOMContentLoaded", function() {
-    var plot = document.querySelector('.js-plotly-plot');
+    const plot = document.querySelector('.js-plotly-plot');
     if (plot) {
       plot.on('plotly_click', function(data) {
         const point = data.points[0];
