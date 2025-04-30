@@ -3,13 +3,13 @@ import plotly.graph_objects as go
 import numpy as np
 import re
 
-# Load dataset
+# Load CSV
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
 
-# Remove "Advanced Career"
+# Exclude Advanced Career
 df = df[df["Career_Level"] != "Advanced Career"]
 
-# Normalize Position_Category for filename-safe links
+# Normalize for filenames
 def normalize_name(name):
     name = str(name).lower().strip()
     name = re.sub(r'\s+', ' ', name)
@@ -18,11 +18,11 @@ def normalize_name(name):
 
 df["Normalized_Category"] = df["Position_Category"].apply(normalize_name)
 
-# Map career levels to radial rings
+# Map career level to rings
 career_map = {"Early Career": 1, "Established Career": 2}
 df["Radius"] = df["Career_Level"].map(career_map)
 
-# Define angular quadrants for domains
+# Quadrant angular setup
 quadrant_angles = {
     "Health Classification": (0, 90),
     "Health Information Management": (90, 180),
@@ -30,7 +30,7 @@ quadrant_angles = {
     "Health Data Analysis": (270, 360)
 }
 
-# Assign angle per domain-category pair
+# Assign angles per domain-category
 angle_lookup = {}
 for domain, (start, end) in quadrant_angles.items():
     domain_data = df[df["Domain"] == domain]
@@ -41,16 +41,16 @@ for domain, (start, end) in quadrant_angles.items():
 
 df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"]), 0), axis=1)
 
-# Count frequency of Position_Category per domain
+# Frequency calculation
 df["Frequency"] = df.groupby(["Domain", "Position_Category"])["Position_Category"].transform("count")
 
-# Keep highest frequency Career_Level record per domain-category pair
+# Drop duplicates — one per domain-category
 df = df.sort_values("Frequency", ascending=False).drop_duplicates(subset=["Domain", "Position_Category"])
 
-# Get top 10 unique categories per domain
+# Top 10 categories per domain
 top_categories = df.groupby("Domain").head(10)
 
-# Begin plot
+# Plot
 fig = go.Figure()
 
 domain_colors = {
@@ -67,22 +67,19 @@ for _, row in top_categories.iterrows():
         theta=[row["Theta"]],
         mode="markers",
         marker=dict(
-            size=10 + 4 * np.log1p(row["Frequency"]),
+            size=14,
             color=domain_colors.get(row["Domain"], "#636efa"),
-            line=dict(color="#000000", width=1.5),
-            opacity=0.9
+            line=dict(color="#000000", width=1.2),
+            opacity=0.95
         ),
-        hovertemplate=(
-            f"<b>{row['Position_Category']}</b><br>"
-            f"Domain: {row['Domain']}<br>"
-            f"Career Level: {row['Career_Level']}<br>"
-            f"Frequency: {row['Frequency']}<br>"
-            f"<a href='{link}' target='_blank'>View Category</a><extra></extra>"
-        )
+        hovertext=row["Position_Category"],
+        hoverinfo="text",
+        customdata=[link],
+        name=""
     ))
 
 fig.update_layout(
-    title="Explore Health Career Domains (Top 10 Position Categories per Domain)",
+    title="Top Position Categories Across Health Career Domains",
     polar=dict(
         radialaxis=dict(
             visible=True,
@@ -107,7 +104,31 @@ fig.update_layout(
     font=dict(size=13)
 )
 
-# Save output
-output_path = "../index.html"
-fig.write_html(output_path)
-print(f"✔️ Radial map saved to {output_path}")
+# Save HTML
+html_path = "../index.html"
+fig.write_html(html_path, include_plotlyjs="cdn", full_html=True)
+
+# Add click-to-navigate JS
+with open(html_path, "r") as f:
+    content = f.read()
+
+content = content.replace(
+    "<body>",
+    """<body>
+<script>
+document.querySelectorAll('g.scatterlayer .trace').forEach(trace => {
+  trace.addEventListener('click', function(evt) {
+    const target = evt.target.closest('[data-unformatted]');
+    if (target && target.__data__ && target.__data__.customdata) {
+      const url = target.__data__.customdata;
+      if (url) window.open(url, "_blank");
+    }
+  });
+});
+</script>"""
+)
+
+with open(html_path, "w") as f:
+    f.write(content)
+
+print(f"✔️ Clean clickable category map saved to {html_path}")
