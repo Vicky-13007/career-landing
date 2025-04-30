@@ -13,8 +13,16 @@
         h1 {
             color: #2c3e50;
         }
-        p {
-            font-size: 1.1rem;
+        .stats {
+            animation: slideFadeIn 0.8s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes slideFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -23,9 +31,11 @@
     <p>This page will include detailed information about the <strong>System Analyst</strong> category.</p>
     <p>You can describe example job roles, required skills, career progression, and domain-specific insights here.</p>
     <hr>
-    <h3>Stats:</h3>
-    <p><strong>Frequency:</strong> 1</p>
-    <p><strong>Appears in Domains:</strong> Health Informatics</p>
-    <p><strong>Career Levels:</strong> Early Career</p>
+    <div class="stats">
+        <h3>Stats:</h3>
+        <p><strong>Frequency:</strong> 1</p>
+        <p><strong>Appears in Domains:</strong> Health Informatics</p>
+        <p><strong>Career Levels:</strong> Early Career</p>
+    </div>
 </body>
 </html>

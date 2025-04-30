@@ -140,6 +140,13 @@ with open(html_path, "r") as f:
 content = content.replace(
     "<body>",
     """<body>
+<style>
+.js-plotly-plot .scatterpolar path:hover {
+  filter: drop-shadow(0 0 5px #00FFFF);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+</style>
 <script>
 document.addEventListener(\"DOMContentLoaded\", function() {
   var plot = document.querySelector('.js-plotly-plot');
@@ -179,7 +186,8 @@ summary_df["Normalized_Category"] = summary_df["Position_Category"].apply(normal
 summary_df = summary_df.drop_duplicates("Normalized_Category")
 summary_dict = summary_df.set_index("Normalized_Category").to_dict("index")
 
-# HTML template function with stats
+# HTML template function with animated stats
+
 def generate_html(category_name, frequency, domains, career_levels):
     return f"""<!DOCTYPE html>
 <html lang=\"en\">
@@ -196,8 +204,16 @@ def generate_html(category_name, frequency, domains, career_levels):
         h1 {{
             color: #2c3e50;
         }}
-        p {{
-            font-size: 1.1rem;
+        .stats {{
+            animation: slideFadeIn 0.8s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }}
+        @keyframes slideFadeIn {{
+            to {{
+                opacity: 1;
+                transform: translateY(0);
+            }}
         }}
     </style>
 </head>
@@ -206,10 +222,12 @@ def generate_html(category_name, frequency, domains, career_levels):
     <p>This page will include detailed information about the <strong>{category_name}</strong> category.</p>
     <p>You can describe example job roles, required skills, career progression, and domain-specific insights here.</p>
     <hr>
-    <h3>Stats:</h3>
-    <p><strong>Frequency:</strong> {frequency}</p>
-    <p><strong>Appears in Domains:</strong> {domains}</p>
-    <p><strong>Career Levels:</strong> {career_levels}</p>
+    <div class=\"stats\">
+        <h3>Stats:</h3>
+        <p><strong>Frequency:</strong> {frequency}</p>
+        <p><strong>Appears in Domains:</strong> {domains}</p>
+        <p><strong>Career Levels:</strong> {career_levels}</p>
+    </div>
 </body>
 </html>"""
 
