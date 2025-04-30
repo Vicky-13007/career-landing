@@ -81,21 +81,27 @@ for _, row in top_categories.iterrows():
 fig.update_layout(
     title="Top Position Categories Across Health Career Domains",
     polar=dict(
+        bgcolor="#f0f0f0",  # subtle light grey for better contrast
         radialaxis=dict(
             visible=True,
             tickvals=[1, 2],
             ticktext=["Early Career", "Established Career"],
             range=[0.5, 2.5],
-            gridcolor="#d3d3d3"
+            gridcolor="#a3a3a3",  # darker radial ring lines
+            gridwidth=1.5,
+            linecolor="#333333",
+            linewidth=1
         ),
         angularaxis=dict(
             tickvals=[45, 135, 225, 315],
             ticktext=list(quadrant_angles.keys()),
             direction="clockwise",
             rotation=90,
-            gridcolor="#e1e1e1"
-        ),
-        bgcolor="#f9f9f9"
+            gridcolor="#a3a3a3",  # darker quadrant lines
+            gridwidth=1.5,
+            linecolor="#333333",
+            linewidth=1
+        )
     ),
     paper_bgcolor="#ffffff",
     showlegend=False,
@@ -103,6 +109,7 @@ fig.update_layout(
     height=1000,
     font=dict(size=13)
 )
+
 
 # Save HTML
 html_path = "../index.html"
