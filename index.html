@@ -1,94 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Career Pathways Landing Page</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <style>
-        body {
-            background-color: #f0f4f8;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        h1 {
-            margin-top: 20px;
-            font-size: 32px;
-        }
-        #plot {
-            width: 100%;
-            height: 90vh;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Explore Health Career Domains</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      background-color: #f4f8fb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 2.5em;
+      color: #111;
+    }
+
+    .grid {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(2, 300px);
+      grid-template-rows: repeat(2, 300px);
+      gap: 50px;
+    }
+
+    .quadrant {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      margin: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .quadrant:hover {
+      transform: scale(1.1);
+    }
+
+    .classification { background-color: #e74c3c; color: white; }
+    .him { background-color: #3498db; color: white; }
+    .informatics { background-color: #f39c12; color: white; }
+    .data { background-color: #27ae60; color: white; }
+
+  </style>
 </head>
 <body>
-<h1>Explore Health Career Domains</h1>
-<div id="plot"></div>
 
-<script>
-    const data = [];
+  <h1>Explore Health Career Domains</h1>
 
-    // Quadrant positions
-    const domains = ["Health Classification", "Health Data Analysis", "Health Informatics", "Health Information Management"];
-    const angles = [45, 135, 225, 315];
+  <div class="grid">
+    <div class="quadrant classification" onclick="window.location.href='final_radial_map_Health_Classification.html'">
+      Health Classification
+    </div>
+    <div class="quadrant him" onclick="window.location.href='final_radial_map_Health_Information_Management.html'">
+      Health Information Management
+    </div>
+    <div class="quadrant informatics" onclick="window.location.href='final_radial_map_Health_Informatics.html'">
+      Health Informatics
+    </div>
+    <div class="quadrant data" onclick="window.location.href='final_radial_map_Health_Data_Analysis.html'">
+      Health Data Analysis
+    </div>
+  </div>
 
-    // Example top roles (should be dynamically generated)
-    const topRoles = {
-        "Health Classification": ["Health Information Manager", "Clinical Coder", "Clinical Documentation Specialist"],
-        "Health Data Analysis": ["Data Analyst", "Data Quality Officer", "Research Analyst"],
-        "Health Informatics": ["Health Informatician", "Systems Analyst", "Data Systems Manager"],
-        "Health Information Management": ["HIM Manager", "Records Officer", "Release of Information Officer"]
-    };
-
-    const colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"];
-
-    let domain_idx = 0;
-    domains.forEach(domain => {
-        let angle = angles[domain_idx];
-        let base_x = Math.cos(angle * Math.PI / 180);
-        let base_y = Math.sin(angle * Math.PI / 180);
-
-        let dots = [];
-        for (let i = 0; i < topRoles[domain].length; i++) {
-            let r = 0.3 + 0.1 * i;
-            dots.push({
-                x: base_x * r,
-                y: base_y * r,
-                text: topRoles[domain][i],
-                customdata: topRoles[domain][i],
-                domain: domain
-            });
-        }
-
-        data.push({
-            x: dots.map(d => d.x),
-            y: dots.map(d => d.y),
-            mode: 'markers',
-            type: 'scatter',
-            marker: { size: 20, color: colors[domain_idx] },
-            text: dots.map(d => d.text),
-            hoverinfo: 'text',
-            customdata: dots.map(d => d.customdata),
-            name: domain
-        });
-
-        domain_idx++;
-    });
-
-    const layout = {
-        xaxis: {visible: false},
-        yaxis: {visible: false},
-        margin: {l: 0, r: 0, t: 0, b: 0},
-        hovermode: 'closest',
-        showlegend: false
-    };
-
-    Plotly.newPlot('plot', data, layout);
-
-    var plotDiv = document.getElementById('plot');
-    plotDiv.on('plotly_click', function(data){
-        const role = data.points[0].customdata.toLowerCase().replace(/ /g, "-").replace(/\//g, "-");
-        window.location.href = `role-${role}.html`;
-    });
-</script>
 </body>
 </html>
