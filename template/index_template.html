@@ -9,45 +9,39 @@
     body {
       margin: 0;
       background-color: #000000;
-      overflow: hidden;
+      overflow-y: auto;  /* allow scrolling */
       font-family: 'Segoe UI', sans-serif;
     }
 
     #radial-wrapper {
       position: relative;
       width: 100vw;
-      height: 100vh;
+      min-height: 120vh;  /* allow vertical expansion */
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      padding-top: 1rem;
+      padding-bottom: 2rem;
     }
 
     .top-banner-img,
     .bottom-banner-img {
       width: 90%;
-      max-height: 18vh;
+      max-height: 20vh;
       object-fit: contain;
       opacity: 0.95;
       animation: floatY 4s ease-in-out infinite alternate;
     }
 
-    .top-banner-img {
-      margin-top: 1rem;
-    }
-
-    .bottom-banner-img {
-      margin-bottom: 1rem;
-    }
-
     .shrinked-chart {
       width: 80%;
-      height: 65vh;
+      height: 60vh; /* smaller to fit image below */
       z-index: 1;
     }
 
     .corner-icon {
-      position: absolute;
+      position: fixed;
       width: 80px;
       opacity: 0.9;
       z-index: 2;
@@ -84,79 +78,34 @@
 </head>
 
 <body>
-  <!-- Lottie quadrant icons -->
-  <lottie-player
-    src="https://assets6.lottiefiles.com/packages/lf20_vf2zr3iv.json"
-    background="transparent"
-    speed="1"
-    style="width: 160px; height: 160px; position: absolute; top: 30px; left: 30px;"
-    loop
-    autoplay>
-  </lottie-player>
+  <!-- Lottie corner icons -->
+  <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_vf2zr3iv.json" background="transparent"
+    speed="1" style="width: 160px; height: 160px; position: fixed; top: 30px; left: 30px;" loop autoplay></lottie-player>
 
-  <lottie-player
-    src="https://assets2.lottiefiles.com/packages/lf20_3vbOcw.json"
-    background="transparent"
-    speed="1"
-    style="width: 160px; height: 160px; position: absolute; top: 30px; right: 30px;"
-    loop
-    autoplay>
-  </lottie-player>
+  <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_3vbOcw.json" background="transparent"
+    speed="1" style="width: 160px; height: 160px; position: fixed; top: 30px; right: 30px;" loop autoplay></lottie-player>
 
-  <lottie-player
-    src="https://assets10.lottiefiles.com/packages/lf20_ydo1amjm.json"
-    background="transparent"
-    speed="1"
-    style="width: 160px; height: 160px; position: absolute; bottom: 30px; left: 30px;"
-    loop
-    autoplay>
-  </lottie-player>
+  <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_ydo1amjm.json" background="transparent"
+    speed="1" style="width: 160px; height: 160px; position: fixed; bottom: 30px; left: 30px;" loop autoplay></lottie-player>
 
-  <lottie-player
-    src="https://assets1.lottiefiles.com/packages/lf20_zrqthn6o.json"
-    background="transparent"
-    speed="1"
-    style="width: 160px; height: 160px; position: absolute; bottom: 30px; right: 30px;"
-    loop
-    autoplay>
-  </lottie-player>
+  <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_zrqthn6o.json" background="transparent"
+    speed="1" style="width: 160px; height: 160px; position: fixed; bottom: 30px; right: 30px;" loop autoplay></lottie-player>
 
   <div id="radial-wrapper">
-    <!-- Top image -->
+    <!-- Top Image -->
     <img src="images/healthfacility.jpg" alt="Health Facility" class="top-banner-img">
 
-    <!-- Radial chart goes here -->
+    <!-- Radial Map Injected -->
     <div id="map-container" class="shrinked-chart">
       <!--RADIAL_MAP-->
     </div>
 
-    <!-- Bottom image -->
+    <!-- Bottom Image -->
     <img src="images/healthworkers.jpg" alt="Health Workers" class="bottom-banner-img">
-
-    <!-- For fallback quadrant icon positions -->
-    <div class="corner-icon top-left" id="icon-classification"></div>
-    <div class="corner-icon top-right" id="icon-him"></div>
-    <div class="corner-icon bottom-left" id="icon-informatics"></div>
-    <div class="corner-icon bottom-right" id="icon-analysis"></div>
   </div>
 
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <script>
-    function loadLottie(id, path) {
-      lottie.loadAnimation({
-        container: document.getElementById(id),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: path
-      });
-    }
-
-    loadLottie('icon-classification', 'https://assets6.lottiefiles.com/packages/lf20_kq5rGs.json');
-    loadLottie('icon-him',           'https://assets6.lottiefiles.com/packages/lf20_dgzrnsns.json');
-    loadLottie('icon-informatics',   'https://assets1.lottiefiles.com/private_files/lf30_bx2gk4ux.json');
-    loadLottie('icon-analysis',      'https://assets9.lottiefiles.com/packages/lf20_czdlfgiv.json');
-
     document.addEventListener("DOMContentLoaded", function() {
       const plot = document.querySelector('.js-plotly-plot');
       if (plot) {
