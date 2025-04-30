@@ -6,23 +6,23 @@ import re
 # Load dataset
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
 
-# Step 1: Filter out "Advanced Career"
+# Remove "Advanced Career"
 df = df[df["Career_Level"] != "Advanced Career"]
 
-# Normalize titles for URLs
-def normalize_title(title):
-    title = str(title).lower().strip()
-    title = re.sub(r'\s+', ' ', title)
-    title = re.sub(r'[^a-z0-9\s]', '', title)
-    return title.replace(' ', '_')
+# Normalize Position_Category for filename-safe links
+def normalize_name(name):
+    name = str(name).lower().strip()
+    name = re.sub(r'\s+', ' ', name)
+    name = re.sub(r'[^a-z0-9\s]', '', name)
+    return name.replace(' ', '_')
 
-df["Normalized_Title"] = df["Position_Title"].apply(normalize_title)
+df["Normalized_Category"] = df["Position_Category"].apply(normalize_name)
 
-# Career ring mapping
+# Map career levels to radial rings
 career_map = {"Early Career": 1, "Established Career": 2}
 df["Radius"] = df["Career_Level"].map(career_map)
 
-# Define quadrant angular range
+# Define angular quadrants for domains
 quadrant_angles = {
     "Health Classification": (0, 90),
     "Health Information Management": (90, 180),
@@ -30,27 +30,27 @@ quadrant_angles = {
     "Health Data Analysis": (270, 360)
 }
 
-# Assign angle by domain-category
+# Assign angle per domain-category pair
 angle_lookup = {}
 for domain, (start, end) in quadrant_angles.items():
     domain_data = df[df["Domain"] == domain]
     categories = sorted(domain_data["Position_Category"].dropna().unique())
     step = (end - start) / max(len(categories), 1)
     for i, cat in enumerate(categories):
-        angle_lookup[(domain, cat)] = start + step / 2 + i * step
+        angle_lookup[(domain, cat)] = start + step/2 + i * step
 
 df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"]), 0), axis=1)
 
-# Compute frequency per domain-role
-df["Frequency"] = df.groupby(["Domain", "Position_Title"])["Position_Title"].transform("count")
+# Count frequency of Position_Category per domain
+df["Frequency"] = df.groupby(["Domain", "Position_Category"])["Position_Category"].transform("count")
 
-# Drop duplicate entries for same role per domain (keep max freq)
-df = df.sort_values("Frequency", ascending=False).drop_duplicates(subset=["Domain", "Position_Title"])
+# Keep highest frequency Career_Level record per domain-category pair
+df = df.sort_values("Frequency", ascending=False).drop_duplicates(subset=["Domain", "Position_Category"])
 
-# Select top 10 unique roles per domain
-top_roles = df.groupby("Domain").head(10)
+# Get top 10 unique categories per domain
+top_categories = df.groupby("Domain").head(10)
 
-# Prepare plot
+# Begin plot
 fig = go.Figure()
 
 domain_colors = {
@@ -60,29 +60,29 @@ domain_colors = {
     "Health Data Analysis": "#FFA15A"
 }
 
-for _, row in top_roles.iterrows():
-    link = f"roles/{row['Normalized_Title']}.html"
+for _, row in top_categories.iterrows():
+    link = f"categories/{row['Normalized_Category']}.html"
     fig.add_trace(go.Scatterpolar(
         r=[row["Radius"]],
         theta=[row["Theta"]],
         mode="markers",
         marker=dict(
-            size=6 + 6 * np.log1p(row["Frequency"]),
+            size=10 + 4 * np.log1p(row["Frequency"]),
             color=domain_colors.get(row["Domain"], "#636efa"),
             line=dict(color="#000000", width=1.5),
             opacity=0.9
         ),
         hovertemplate=(
-            f"<b>{row['Position_Title']}</b><br>"
-            f"Category: {row['Position_Category']}<br>"
-            f"Level: {row['Career_Level']}<br>"
+            f"<b>{row['Position_Category']}</b><br>"
+            f"Domain: {row['Domain']}<br>"
+            f"Career Level: {row['Career_Level']}<br>"
             f"Frequency: {row['Frequency']}<br>"
-            f"<a href='{link}' target='_blank'>View Role</a><extra></extra>"
+            f"<a href='{link}' target='_blank'>View Category</a><extra></extra>"
         )
     ))
 
 fig.update_layout(
-    title="Explore Health Career Domains (Top 10 Unique Roles per Domain)",
+    title="Explore Health Career Domains (Top 10 Position Categories per Domain)",
     polar=dict(
         radialaxis=dict(
             visible=True,
@@ -107,7 +107,7 @@ fig.update_layout(
     font=dict(size=13)
 )
 
-# Save file
+# Save output
 output_path = "../index.html"
 fig.write_html(output_path)
 print(f"✔️ Radial map saved to {output_path}")
