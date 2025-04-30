@@ -81,7 +81,7 @@ for _, row in top_categories.iterrows():
 fig.update_layout(
     title="Top Position Categories Across Health Career Domains",
     polar=dict(
-        bgcolor="#f0f0f0",  # subtle light grey for better contrast
+        bgcolor="#000000",  # black for better contrast
         radialaxis=dict(
             visible=True,
             tickvals=[1, 2],
