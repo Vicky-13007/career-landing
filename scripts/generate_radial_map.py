@@ -3,10 +3,10 @@ import plotly.graph_objects as go
 import numpy as np
 import re
 
-# Load your dataset
+# Load dataset
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
 
-# Normalize titles for safe HTML links
+# Normalize titles for URLs
 def normalize_title(title):
     title = str(title).lower().strip()
     title = re.sub(r'\s+', ' ', title)
@@ -15,11 +15,11 @@ def normalize_title(title):
 
 df["Normalized_Title"] = df["Position_Title"].apply(normalize_title)
 
-# Map career levels to rings
+# Map Career Levels
 career_map = {"Early Career": 1, "Established Career": 2, "Advanced Career": 3}
 df["Radius"] = df["Career_Level"].map(career_map)
 
-# Define quadrant angular range
+# Quadrant angle setup
 quadrant_angles = {
     "Health Classification": (0, 90),
     "Health Information Management": (90, 180),
@@ -27,29 +27,36 @@ quadrant_angles = {
     "Health Data Analysis": (270, 360)
 }
 
-# Map each domain-category to a unique angle
+# Assign unique angle per domain-category
 angle_lookup = {}
-for domain, (start_angle, end_angle) in quadrant_angles.items():
+for domain, (start, end) in quadrant_angles.items():
     domain_data = df[df["Domain"] == domain]
     categories = sorted(domain_data["Position_Category"].dropna().unique())
-    step = (end_angle - start_angle) / max(len(categories), 1)
+    step = (end - start) / max(len(categories), 1)
     for i, cat in enumerate(categories):
-        angle_lookup[(domain, cat)] = start_angle + step / 2 + i * step
+        angle_lookup[(domain, cat)] = start + step / 2 + i * step
 
 df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"]), 0), axis=1)
 
-# Keep only top 10 roles per domain by frequency
-df["Frequency"] = df.groupby("Normalized_Title")["Normalized_Title"].transform("count")
-df_top = df.sort_values("Frequency", ascending=False).groupby("Domain").head(10)
+# Frequency of roles per domain
+role_counts = df.groupby(["Domain", "Position_Title"]).size().reset_index(name="Frequency")
+
+# Keep top 10 roles per domain
+top_roles = role_counts.groupby("Domain").apply(lambda g: g.nlargest(10, "Frequency")).reset_index(drop=True)
+
+# Merge to get full details
+df_unique = df.drop_duplicates(subset=["Domain", "Position_Title"])
+merged = pd.merge(top_roles, df_unique, on=["Domain", "Position_Title"], how="left")
 
 # Aggregate
-agg_df = df_top.groupby(
-    ["Domain", "Position_Category", "Normalized_Title", "Position_Title", "Career_Level", "Radius", "Theta"]
-).size().reset_index(name="Frequency")
+agg_df = merged[[
+    "Domain", "Position_Category", "Normalized_Title", "Position_Title", "Career_Level", "Radius", "Theta", "Frequency"
+]]
 
-# Plot
+# Plotly Radial Plot
 fig = go.Figure()
 
+# Color by domain
 domain_colors = {
     "Health Classification": "#EF553B",
     "Health Information Management": "#00CC96",
@@ -79,7 +86,7 @@ for _, row in agg_df.iterrows():
     ))
 
 fig.update_layout(
-    title="Explore Health Career Domains (AHIMA-style Radial Map)",
+    title="Explore Health Career Domains (Top 10 Roles per Domain)",
     polar=dict(
         bgcolor="#f9f9f9",
         radialaxis=dict(
@@ -87,8 +94,6 @@ fig.update_layout(
             tickvals=[1, 2, 3],
             ticktext=["Early Career", "Established Career", "Advanced Career"],
             range=[0.5, 3.5],
-            showline=False,
-            linewidth=1,
             gridcolor="#d3d3d3"
         ),
         angularaxis=dict(
@@ -100,14 +105,13 @@ fig.update_layout(
         )
     ),
     paper_bgcolor="#ffffff",
-    plot_bgcolor="#ffffff",
     showlegend=False,
     width=1000,
     height=1000,
     font=dict(size=13)
 )
 
-# Save HTML
+# Save output
 output_path = "../index.html"
 fig.write_html(output_path)
-print(f"✔️ Radial map saved to {output_path}")
+print(f"✔️ Map saved to {output_path}")
