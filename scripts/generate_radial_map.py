@@ -92,7 +92,7 @@ fig.update_layout(
 )
 
 # Save to output file (relative to scripts folder)
-output_path = "../combined_radial_map.html"
+output_path = "../index.html"
 fig.write_html(output_path)
 
 print(f"Radial map successfully saved to {output_path}")
