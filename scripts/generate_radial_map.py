@@ -79,25 +79,26 @@ for _, row in top_categories.iterrows():
     ))
 
 # Add connecting lines for categories shared across domains
-shared = top_categories.groupby("Position_Category").filter(lambda g: len(g) > 1)
+shared = top_categories.groupby("Position_Category").filter(lambda g: len(g["Domain"].unique()) > 1)
 
 for category, group in shared.groupby("Position_Category"):
     r_vals = group["Radius"].tolist()
     theta_vals = group["Theta"].tolist()
 
-    # Sort by angle to keep line clean
-    paired = sorted(zip(theta_vals, r_vals))
-    theta_sorted, r_sorted = zip(*paired)
+    if len(r_vals) > 1:
+        # Sort to make line smoother
+        paired = sorted(zip(theta_vals, r_vals))
+        theta_sorted, r_sorted = zip(*paired)
 
-    fig.add_trace(go.Scatterpolar(
-        r=r_sorted,
-        theta=theta_sorted,
-        mode="lines",
-        line=dict(color="white", width=1, dash="dot"),
-        opacity=0.4,
-        hoverinfo="none",
-        showlegend=False
-    ))
+        fig.add_trace(go.Scatterpolar(
+            r=r_sorted,
+            theta=theta_sorted,
+            mode="lines",
+            line=dict(color="white", width=1.2, dash="dot"),
+            opacity=0.5,
+            hoverinfo="none",
+            showlegend=False
+        ))
 
 
 fig.update_layout(
