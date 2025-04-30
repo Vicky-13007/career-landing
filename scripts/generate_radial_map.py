@@ -5,7 +5,7 @@ import re
 import os
 
 # Load your dataset
-df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
+df = pd.read_csv("Users/vignesshwarvenkatachalam/Downloads/career_landing/data/radial_data_split_domains_filtered.csv")
 
 # Normalize title for file-safe linking
 def normalize_title(title):
