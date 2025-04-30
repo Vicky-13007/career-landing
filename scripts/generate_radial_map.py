@@ -4,10 +4,10 @@ import numpy as np
 import re
 import os
 
-# Load the dataset
-df = pd.read_csv("/Users/vignesshwarvenkatachalam/Downloads/career_landing/data/radial_data_split_domains_filtered.csv")
+# Load your dataset
+df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
 
-# Clean and normalize Position Titles for grouping and filename consistency
+# Normalize title for file-safe linking
 def normalize_title(title):
     title = str(title).lower().strip()
     title = re.sub(r'\s+', ' ', title)
@@ -16,67 +16,83 @@ def normalize_title(title):
 
 df["Normalized_Title"] = df["Position_Title"].apply(normalize_title)
 
-# Group and summarize by normalized title
+# Map career levels to rings
+career_map = {"Early Career": 1, "Established Career": 2, "Advanced Career": 3}
+df["Radius"] = df["Career_Level"].map(career_map)
+
+# Define 4 quadrants by domain
+quadrant_angles = {
+    "Health Classification": (0, 90),
+    "Health Information Management": (90, 180),
+    "Health Informatics": (180, 270),
+    "Health Data Analysis": (270, 360)
+}
+
+# Assign angle per domain-category combo
+angle_lookup = {}
+for domain, (start_angle, end_angle) in quadrant_angles.items():
+    domain_data = df[df["Domain"] == domain]
+    categories = sorted(domain_data["Position_Category"].dropna().unique())
+    step = (end_angle - start_angle) / max(len(categories), 1)
+    for i, cat in enumerate(categories):
+        angle_lookup[(domain, cat)] = start_angle + step/2 + i * step
+
+df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"]), 0), axis=1)
+
+# Group and count
 agg_df = df.groupby(
-    ["Domain", "Position_Category", "Normalized_Title", "Career_Level", "Position_Title"]
+    ["Domain", "Position_Category", "Normalized_Title", "Position_Title", "Career_Level", "Radius", "Theta"]
 ).size().reset_index(name="Frequency")
 
-# Define ring mapping
-ring_map = {"Early Career": 1, "Established Career": 2, "Advanced Career": 3}
+# Generate the radial map
+fig = go.Figure()
 
-# Create radial plots per domain
-for domain in agg_df["Domain"].dropna().unique():
-    domain_data = agg_df[agg_df["Domain"] == domain].copy()
-    categories = sorted(domain_data["Position_Category"].unique())
-    angle_map = {cat: i * (360 / len(categories)) for i, cat in enumerate(categories)}
-    domain_data["Angle"] = domain_data["Position_Category"].map(angle_map)
-    domain_data["Radius"] = domain_data["Career_Level"].map(ring_map)
-
-    fig = go.Figure()
-    for _, row in domain_data.iterrows():
-        role_filename = f"roles/{row['Normalized_Title']}.html"
-        fig.add_trace(go.Scatterpolar(
-            r=[row["Radius"]],
-            theta=[row["Angle"]],
-            mode='markers',
-            marker=dict(
-                size=5 + 5 * np.log1p(row["Frequency"]),
-                color=row["Radius"],
-                colorscale="Viridis",
-                line=dict(color="white", width=1),
-                opacity=0.9
-            ),
-            hovertemplate=(
-                f"<b>{row['Position_Title']}</b><br>"
-                f"{row['Position_Category']}<br>"
-                f"{row['Career_Level']}<br>"
-                f"Freq: {row['Frequency']}<br>"
-                f"<a href='{role_filename}' target='_blank'>View role page</a><extra></extra>"
-            )
-        ))
-
-    fig.update_layout(
-        title=f"Career Pathways in {domain}",
-        polar=dict(
-            radialaxis=dict(
-                visible=True,
-                tickvals=[1, 2, 3],
-                ticktext=["Early Career", "Established Career", "Advanced Career"],
-                range=[0.5, 3.5]
-            ),
-            angularaxis=dict(
-                tickvals=list(angle_map.values()),
-                ticktext=list(angle_map.keys()),
-                rotation=90,
-                direction="clockwise"
-            )
+for _, row in agg_df.iterrows():
+    role_link = f"roles/{row['Normalized_Title']}.html"
+    fig.add_trace(go.Scatterpolar(
+        r=[row["Radius"]],
+        theta=[row["Theta"]],
+        mode='markers',
+        marker=dict(
+            size=5 + 5 * np.log1p(row["Frequency"]),
+            color=row["Radius"],
+            colorscale="Viridis",
+            line=dict(color="white", width=1),
+            opacity=0.95
         ),
-        template="plotly_dark",
-        showlegend=False,
-        width=850,
-        height=850
-    )
+        hovertemplate=(
+            f"<b>{row['Position_Title']}</b><br>"
+            f"Category: {row['Position_Category']}<br>"
+            f"Level: {row['Career_Level']}<br>"
+            f"Freq: {row['Frequency']}<br>"
+            f"<a href='{role_link}' target='_blank'>View Role Page</a><extra></extra>"
+        )
+    ))
 
-    # Save HTML file
-    filename = f"../final_radial_map_{domain.replace(' ', '_')}.html"
-    fig.write_html(filename)
+fig.update_layout(
+    title="Explore Health Career Domains (AHIMA-style Radial Map)",
+    polar=dict(
+        radialaxis=dict(
+            visible=True,
+            tickvals=[1, 2, 3],
+            ticktext=["Early Career", "Established Career", "Advanced Career"],
+            range=[0.5, 3.5]
+        ),
+        angularaxis=dict(
+            tickvals=[45, 135, 225, 315],
+            ticktext=list(quadrant_angles.keys()),
+            direction="clockwise",
+            rotation=90
+        )
+    ),
+    template="plotly_white",
+    showlegend=False,
+    width=950,
+    height=950
+)
+
+# Save to output file (relative to scripts folder)
+output_path = "../combined_radial_map.html"
+fig.write_html(output_path)
+
+print(f"Radial map successfully saved to {output_path}")
