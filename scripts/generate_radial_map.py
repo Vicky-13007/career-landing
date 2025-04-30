@@ -5,7 +5,7 @@ import re
 import os
 
 # Load your dataset
-df = pd.read_csv("Users/vignesshwarvenkatachalam/Downloads/career_landing/data/radial_data_split_domains_filtered.csv")
+df = pd.read_csv("/Users/vignesshwarvenkatachalam/Downloads/career_landing/data/radial_data_split_domains_filtered.csv")
 
 # Normalize title for file-safe linking
 def normalize_title(title):
@@ -92,7 +92,7 @@ fig.update_layout(
 )
 
 # Save to output file (relative to scripts folder)
-output_path = "../index.html"
+output_path = "/Users/vignesshwarvenkatachalam/Downloads/career_landing/index.html"
 fig.write_html(output_path)
 
 print(f"Radial map successfully saved to {output_path}")
