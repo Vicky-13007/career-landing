@@ -129,51 +129,23 @@ fig.update_layout(
     height=1000
 )
 
-# Save HTML
-html_path = "../index.html"
-fig.write_html(html_path, include_plotlyjs="cdn", full_html=True)
+# Export the Plotly chart as a div-only HTML
+chart_html = fig.to_html(include_plotlyjs="cdn", full_html=False, div_id="map-container")
 
-# Add working click handler using Plotly's native event system with glowing and pulsing hover effect
-with open(html_path, "r") as f:
-    content = f.read()
+# Load the Lottie-enhanced HTML template
+template_path = "../template/index_template.html"
+with open(template_path, "r", encoding="utf-8") as f:
+    base_template = f.read()
 
-content = content.replace(
-    "<body>",
-    """<body>
-<style>
-.js-plotly-plot .scatterlayer .trace .points path {
-  transition: filter 0.3s ease, transform 0.3s ease;
-}
-.js-plotly-plot .scatterlayer .trace .points path:hover {
-  filter: drop-shadow(0 0 8px #00faff);
-  transform: scale(1.2);
-  animation: pulse 1s infinite;
-  cursor: pointer;
-}
-@keyframes pulse {
-  0% { filter: drop-shadow(0 0 6px #00faff); }
-  50% { filter: drop-shadow(0 0 12px #00faff); }
-  100% { filter: drop-shadow(0 0 6px #00faff); }
-}
-</style>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  var plot = document.querySelector('.js-plotly-plot');
-  if (plot) {
-    plot.on('plotly_click', function(data) {
-      const point = data.points[0];
-      const url = point.customdata;
-      if (url) window.open(url, '_blank');
-    });
-  }
-});
-</script>"""
-)
+# Inject Plotly chart into the template
+final_output = base_template.replace("<!-- Plotly chart will render here -->", chart_html)
 
-with open(html_path, "w") as f:
-    f.write(content)
+# Save the final index.html
+output_path = "../index.html"
+with open(output_path, "w", encoding="utf-8") as f:
+    f.write(final_output)
 
-print(f"\u2705 Radial map with working click events saved to: {html_path}")
+print(f"✅ Radial map embedded in animated layout and saved to: {output_path}")
 
 # Generate category HTML pages
 category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
@@ -196,7 +168,6 @@ summary_df = summary_df.drop_duplicates("Normalized_Category")
 summary_dict = summary_df.set_index("Normalized_Category").to_dict("index")
 
 # HTML template function with animated stats
-
 def generate_html(category_name, frequency, domains, career_levels):
     return f"""<!DOCTYPE html>
 <html lang=\"en\">
@@ -251,4 +222,4 @@ for original, data in summary_dict.items():
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(html)
 
-print(f"\u2705 Generated {len(summary_dict)} category pages in: {category_dir}")
+print(f"✅ Generated {len(summary_dict)} category pages in: {category_dir}")
