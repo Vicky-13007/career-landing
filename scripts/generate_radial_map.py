@@ -133,7 +133,7 @@ fig.update_layout(
 html_path = "../index.html"
 fig.write_html(html_path, include_plotlyjs="cdn", full_html=True)
 
-# Add working click handler using Plotly's native event system
+# Add working click handler using Plotly's native event system with glowing and pulsing hover effect
 with open(html_path, "r") as f:
     content = f.read()
 
@@ -141,14 +141,23 @@ content = content.replace(
     "<body>",
     """<body>
 <style>
-.js-plotly-plot .scatterpolar path:hover {
-  filter: drop-shadow(0 0 5px #00FFFF);
+.js-plotly-plot .scatterlayer .trace .points path {
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+.js-plotly-plot .scatterlayer .trace .points path:hover {
+  filter: drop-shadow(0 0 8px #00faff);
+  transform: scale(1.2);
+  animation: pulse 1s infinite;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+}
+@keyframes pulse {
+  0% { filter: drop-shadow(0 0 6px #00faff); }
+  50% { filter: drop-shadow(0 0 12px #00faff); }
+  100% { filter: drop-shadow(0 0 6px #00faff); }
 }
 </style>
 <script>
-document.addEventListener(\"DOMContentLoaded\", function() {
+document.addEventListener("DOMContentLoaded", function() {
   var plot = document.querySelector('.js-plotly-plot');
   if (plot) {
     plot.on('plotly_click', function(data) {
