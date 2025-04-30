@@ -1,13 +1,24 @@
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+import re
+import os
 
 # Load the dataset
 df = pd.read_csv("/Users/vignesshwarvenkatachalam/Downloads/career_landing/data/radial_data_split_domains_filtered.csv")
 
-# Group and summarize to create the 'Frequency' column
+# Clean and normalize Position Titles for grouping and filename consistency
+def normalize_title(title):
+    title = str(title).lower().strip()
+    title = re.sub(r'\s+', ' ', title)
+    title = re.sub(r'[^a-z0-9\s]', '', title)
+    return title.replace(' ', '_')
+
+df["Normalized_Title"] = df["Position_Title"].apply(normalize_title)
+
+# Group and summarize by normalized title
 agg_df = df.groupby(
-    ["Domain", "Position_Category", "Position_Title", "Career_Level"]
+    ["Domain", "Position_Category", "Normalized_Title", "Career_Level", "Position_Title"]
 ).size().reset_index(name="Frequency")
 
 # Define ring mapping
@@ -23,6 +34,7 @@ for domain in agg_df["Domain"].dropna().unique():
 
     fig = go.Figure()
     for _, row in domain_data.iterrows():
+        role_filename = f"roles/{row['Normalized_Title']}.html"
         fig.add_trace(go.Scatterpolar(
             r=[row["Radius"]],
             theta=[row["Angle"]],
@@ -34,7 +46,13 @@ for domain in agg_df["Domain"].dropna().unique():
                 line=dict(color="white", width=1),
                 opacity=0.9
             ),
-            hovertemplate=f"<b>{row['Position_Title']}</b><br>{row['Position_Category']}<br>{row['Career_Level']}<br>Freq: {row['Frequency']}<extra></extra>"
+            hovertemplate=(
+                f"<b>{row['Position_Title']}</b><br>"
+                f"{row['Position_Category']}<br>"
+                f"{row['Career_Level']}<br>"
+                f"Freq: {row['Frequency']}<br>"
+                f"<a href='{role_filename}' target='_blank'>View role page</a><extra></extra>"
+            )
         ))
 
     fig.update_layout(
