@@ -163,10 +163,24 @@ print(f"\u2705 Radial map with working click events saved to: {html_path}")
 category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
 os.makedirs(category_dir, exist_ok=True)
 
-unique_categories = top_categories["Position_Category"].unique()
-normalized_map = {cat: normalize_name(cat) for cat in unique_categories}
+# Create a summary from the original dataframe
+summary_df = (
+    df.groupby("Position_Category")
+    .agg(
+        Frequency=("Position_Category", "count"),
+        Domains=("Domain", lambda x: ', '.join(sorted(set(x)))),
+        Career_Levels=("Career_Level", lambda x: ', '.join(sorted(set(x))))
+    )
+    .reset_index()
+)
+summary_df["Normalized_Category"] = summary_df["Position_Category"].apply(normalize_name)
 
-def generate_html(category_name):
+# Drop duplicates based on Normalized_Category
+summary_df = summary_df.drop_duplicates("Normalized_Category")
+summary_dict = summary_df.set_index("Normalized_Category").to_dict("index")
+
+# HTML template function with stats
+def generate_html(category_name, frequency, domains, career_levels):
     return f"""<!DOCTYPE html>
 <html lang=\"en\">
 <head>
@@ -191,13 +205,23 @@ def generate_html(category_name):
     <h1>{category_name}</h1>
     <p>This page will include detailed information about the <strong>{category_name}</strong> category.</p>
     <p>You can describe example job roles, required skills, career progression, and domain-specific insights here.</p>
+    <hr>
+    <h3>Stats:</h3>
+    <p><strong>Frequency:</strong> {frequency}</p>
+    <p><strong>Appears in Domains:</strong> {domains}</p>
+    <p><strong>Career Levels:</strong> {career_levels}</p>
 </body>
 </html>"""
 
-for original, normalized in normalized_map.items():
-    html = generate_html(original)
-    file_path = os.path.join(category_dir, f"{normalized}.html")
+for original, data in summary_dict.items():
+    html = generate_html(
+        category_name=summary_df[summary_df["Normalized_Category"] == original]["Position_Category"].values[0],
+        frequency=data["Frequency"],
+        domains=data["Domains"],
+        career_levels=data["Career_Levels"]
+    )
+    file_path = os.path.join(category_dir, f"{original}.html")
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(html)
 
-print(f"\u2705 Generated {len(unique_categories)} category pages in: {category_dir}")
+print(f"\u2705 Generated {len(summary_dict)} category pages in: {category_dir}")
