@@ -45,7 +45,7 @@ df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Positio
 # Frequency calculation
 df["Frequency"] = df.groupby(["Domain", "Position_Category"])["Position_Category"].transform("count")
 
-# Drop duplicates
+# Drop duplicates 
 df = df.sort_values("Frequency", ascending=False).drop_duplicates(subset=["Domain", "Position_Category"])
 
 # Top 10 categories per domain
@@ -79,7 +79,7 @@ for _, row in top_categories.iterrows():
         name=""
     ))
 
-# Add connecting lines for shared categories
+# Add connecting lines for categories shared across domains
 shared = top_categories.groupby("Position_Category").filter(lambda g: len(g["Domain"].unique()) > 1)
 
 for _, group in shared.groupby("Position_Category"):
@@ -129,17 +129,17 @@ fig.update_layout(
     height=1000
 )
 
-# Export only the chart HTML
+# Export only chart HTML
 chart_html = fig.to_html(include_plotlyjs="cdn", full_html=False, div_id="map-container")
 
-# Inject into your template
+# Inject chart into template
 template_path = "../template/index_template.html"
 with open(template_path, "r", encoding="utf-8") as f:
     base_template = f.read()
 
 final_output = base_template.replace("<!--RADIAL_MAP-->", chart_html)
 
-# Save index.html
+# Save final index.html
 output_path = "../index.html"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(final_output)
@@ -163,12 +163,11 @@ summary_df["Normalized_Category"] = summary_df["Position_Category"].apply(normal
 summary_df = summary_df.drop_duplicates("Normalized_Category")
 summary_dict = summary_df.set_index("Normalized_Category").to_dict("index")
 
-# HTML page generator
 def generate_html(category_name, frequency, domains, career_levels):
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang=\"en\">
 <head>
-    <meta charset="UTF-8">
+    <meta charset=\"UTF-8\">
     <title>{category_name}</title>
     <style>
         body {{
@@ -198,7 +197,7 @@ def generate_html(category_name, frequency, domains, career_levels):
     <p>This page will include detailed information about the <strong>{category_name}</strong> category.</p>
     <p>You can describe example job roles, required skills, career progression, and domain-specific insights here.</p>
     <hr>
-    <div class="stats">
+    <div class=\"stats\">
         <h3>Stats:</h3>
         <p><strong>Frequency:</strong> {frequency}</p>
         <p><strong>Appears in Domains:</strong> {domains}</p>
