@@ -81,34 +81,43 @@ for _, row in top_categories.iterrows():
 fig.update_layout(
     title="Top Position Categories Across Health Career Domains",
     polar=dict(
-        bgcolor="#000000",  # black for better contrast
+        bgcolor="#000000",
         radialaxis=dict(
             visible=True,
             tickvals=[1, 2],
             ticktext=["Early Career", "Established Career"],
             range=[0.5, 2.5],
-            gridcolor="#a3a3a3",  # darker radial ring lines
-            gridwidth=1.5,
-            linecolor="#333333",
-            linewidth=1
+            gridcolor="#555555",
+            gridwidth=1.3,
+            showline=False,  # Remove inner radial axis line
+            tickfont=dict(color="#FFFFFF")
         ),
         angularaxis=dict(
             tickvals=[45, 135, 225, 315],
             ticktext=list(quadrant_angles.keys()),
             direction="clockwise",
-            rotation=90,
-            gridcolor="#a3a3a3",  # darker quadrant lines
-            gridwidth=1.5,
-            linecolor="#333333",
-            linewidth=1
+            rotation=90,  # Starts from top and rotates clockwise
+            gridcolor="#777777",
+            gridwidth=1.3,
+            tickfont=dict(color="#FFFFFF")
         )
     ),
-    paper_bgcolor="#ffffff",
+    paper_bgcolor="#000000",
+    font=dict(color="#FFFFFF"),
     showlegend=False,
     width=1000,
-    height=1000,
-    font=dict(size=13)
+    height=1000
 )
+
+# Assign angle per domain-category
+angle_lookup = {}
+for domain, (start, end) in quadrant_angles.items():
+    domain_data = df[df["Domain"] == domain]
+    categories = sorted(domain_data["Position_Category"].dropna().unique())
+    step = (end - start) / max(len(categories), 1)
+    for i, cat in enumerate(categories):
+        angle_lookup[(domain, cat)] = start + step/2 + i * step
+
 
 
 # Save HTML
