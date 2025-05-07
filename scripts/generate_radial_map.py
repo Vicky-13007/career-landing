@@ -144,7 +144,7 @@ output_path = "../index.html"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(final_output)
 
-print(f"✅ Radial map embedded and saved to: {output_path}")
+print(f"Radial map embedded and saved to: {output_path}")
 
 # Generate category HTML pages
 category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
@@ -217,4 +217,4 @@ for original, data in summary_dict.items():
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(html)
 
-print(f"✅ Generated {len(summary_dict)} category pages in: {category_dir}")
+print(f"Generated {len(summary_dict)} category pages in: {category_dir}")

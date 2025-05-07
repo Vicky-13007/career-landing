@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Health Career Radial Map</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
@@ -9,14 +9,14 @@
     body {
       margin: 0;
       background-color: #000000;
-      overflow-y: auto;  /* allow scrolling */
+      overflow-y: auto;
       font-family: 'Segoe UI', sans-serif;
     }
 
     #radial-wrapper {
       position: relative;
       width: 100vw;
-      min-height: 120vh;  /* allow vertical expansion */
+      min-height: 120vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -36,7 +36,7 @@
 
     .shrinked-chart {
       width: 80%;
-      height: 60vh; /* smaller to fit image below */
+      height: 60vh;
       z-index: 1;
     }
 
@@ -93,7 +93,7 @@
 
   <div id="radial-wrapper">
     <!-- Top Image -->
-    <img src="images/healthfacility.jpg" alt="Health Facility" class="top-banner-img">
+    <img src="images/healthfacility.jpg" alt="Health Facility" class="top-banner-img" />
 
     <!-- Radial Map Injected -->
     <div id="map-container" class="shrinked-chart">
@@ -101,15 +101,15 @@
     </div>
 
     <!-- Bottom Image -->
-    <img src="images/healthworkers.jpg" alt="Health Workers" class="bottom-banner-img">
+    <img src="images/healthworkers.jpg" alt="Health Workers" class="bottom-banner-img" />
   </div>
 
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const plot = document.querySelector('.js-plotly-plot');
       if (plot) {
-        plot.on('plotly_click', function(data) {
+        plot.on('plotly_click', function (data) {
           const point = data.points[0];
           const url = point.customdata;
           if (url) window.open(url, '_blank');
