@@ -12,7 +12,6 @@
       background-color: #f9f9f9;
       overflow-y: auto;
     }
-
     header {
       background-color: #ffffff;
       padding: 1rem 2rem;
@@ -24,26 +23,21 @@
       top: 0;
       z-index: 10;
     }
-
     .logo {
       font-size: 1.4rem;
       font-weight: 700;
       color: #4f46e5;
     }
-
     nav {
       display: flex;
       gap: 1.2rem;
-      align-items: center;
     }
-
     nav a {
       text-decoration: none;
       color: #333;
       font-weight: 500;
       transition: color 0.3s ease;
     }
-
     nav a:hover {
       color: #4f46e5;
     }
@@ -74,36 +68,30 @@
 
     .filters {
       display: flex;
-      flex-wrap: wrap;
       gap: 1rem;
+      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      margin-top: 1rem;
     }
 
     .filters select,
-    .filters input,
-    .filters button {
+    .filters input {
       padding: 0.5rem 1rem;
       font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #fff;
-      transition: box-shadow 0.3s ease;
-    }
-
-    .filters select:focus,
-    .filters input:focus,
-    .filters button:hover {
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-      outline: none;
     }
 
     .filters button {
+      padding: 0.5rem 1.2rem;
       background-color: #4f46e5;
       color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 500;
+    }
+
+    .filters button:hover {
+      background-color: #4338ca;
     }
 
     footer {
@@ -133,7 +121,6 @@
     }
   </style>
 </head>
-
 <body>
   <header>
     <div class="logo">HIM Career Map</div>
@@ -148,14 +135,13 @@
   <main id="radial-wrapper">
     <img src="images/healthfacility.jpg" alt="Health Facility" class="banner-img" />
 
-    <!-- Filter Controls -->
+    <!-- Filter + Search -->
     <div class="filters">
       <select id="career-filter">
         <option value="All">All Career Levels</option>
         <option value="Early Career">Early Career</option>
         <option value="Established Career">Established Career</option>
       </select>
-
       <select id="domain-filter">
         <option value="All">All Domains</option>
         <option value="Health Classification">Health Classification</option>
@@ -163,16 +149,14 @@
         <option value="Health Informatics">Health Informatics</option>
         <option value="Health Data Analysis">Health Data Analysis</option>
       </select>
-
       <select id="category-filter">
         <option value="All">All Categories</option>
       </select>
-
-      <input type="text" id="search-box" placeholder="Search Position..." />
+      <input type="text" id="search-box" placeholder="Search Category" />
       <button id="reset-filters">Reset</button>
     </div>
 
-    <!-- Radial Map -->
+    <!-- Plotly Radial Map -->
     <div id="map-container" class="shrinked-chart">
       <!--RADIAL_MAP-->
     </div>
@@ -188,21 +172,34 @@
     document.addEventListener("DOMContentLoaded", function () {
       const plot = document.querySelector('.js-plotly-plot');
 
+      function normalize(text) {
+        return text.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+      }
+
+      function fuzzyMatch(searchTerm, targetText) {
+        if (!searchTerm) return true;
+        const searchWords = normalize(searchTerm).split(/\s+/);
+        const targetWords = normalize(targetText).split(/\s+/);
+        return searchWords.every(word =>
+          targetWords.some(target => target.startsWith(word) || target.includes(word))
+        );
+      }
+
       function applyFilters() {
         const career = document.getElementById('career-filter').value;
         const domain = document.getElementById('domain-filter').value;
         const category = document.getElementById('category-filter').value;
-        const search = document.getElementById('search-box').value.toLowerCase();
+        const search = document.getElementById('search-box').value;
 
         const update = { visible: [] };
+        const data = plot.data;
 
-        plot.data.forEach(trace => {
+        data.forEach(trace => {
           const [d, c, k, label] = trace.customdata[0].split("||");
-          const show =
-            (career === 'All' || k === career) &&
-            (domain === 'All' || d === domain) &&
-            (category === 'All' || c === category) &&
-            (label.toLowerCase().includes(search));
+          const show = (career === 'All' || k === career) &&
+                       (domain === 'All' || d === domain) &&
+                       (category === 'All' || c === category) &&
+                       fuzzyMatch(search, label);
           update.visible.push(show);
         });
 
@@ -217,7 +214,7 @@
         applyFilters();
       }
 
-      // Populate categories
+      // Populate category filter
       const categories = new Set();
       plot.data.forEach(trace => {
         const parts = trace.customdata[0].split("||");
@@ -232,18 +229,17 @@
         categorySelect.appendChild(opt);
       });
 
-      // Event listeners
       ['career-filter', 'domain-filter', 'category-filter', 'search-box'].forEach(id => {
         document.getElementById(id).addEventListener('input', applyFilters);
       });
 
       document.getElementById('reset-filters').addEventListener('click', resetFilters);
 
-      // Click navigation
+      // Click dot to open role page
       plot.on('plotly_click', function (data) {
         const point = data.points[0];
-        const url = point.data.customdata[0].split("||")[3];
-        if (url) window.open(url, '_blank');
+        const link = point.data.customdata[0].split("||")[3];
+        if (link) window.open(link, '_blank');
       });
     });
   </script>
