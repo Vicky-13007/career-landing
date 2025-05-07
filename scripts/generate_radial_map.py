@@ -45,9 +45,7 @@ df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Positio
 # Count frequency per unique dot (Domain + Category + Career Level)
 freq_df = (
     df.groupby(["Position_Category", "Career_Level", "Domain"])
-    .agg(
-        Frequency=("ID_No", "count")
-    )
+    .agg(Frequency=("ID_No", "count"))
     .reset_index()
 )
 freq_df["Normalized_Category"] = freq_df["Position_Category"].apply(normalize_name)
@@ -66,6 +64,7 @@ domain_colors = {
 
 for _, row in freq_df.iterrows():
     link = f"categories/{row['Normalized_Category']}.html"
+    custom = f"{row['Domain']}||{row['Position_Category']}||{row['Career_Level']}||{link}"
     fig.add_trace(go.Scatterpolar(
         r=[row["Radius"]],
         theta=[row["Theta"]],
@@ -78,7 +77,7 @@ for _, row in freq_df.iterrows():
         ),
         hovertext=f"{row['Position_Category']} ({row['Domain']}, {row['Career_Level']})",
         hoverinfo="text",
-        customdata=[link],
+        customdata=[[custom]],
         name=""
     ))
 
@@ -145,54 +144,4 @@ final_output = base_template.replace("<!--RADIAL_MAP-->", chart_html)
 output_path = "../index.html"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(final_output)
-print(f"✅ Radial map embedded and saved to: {output_path}")
-
-# Generate category pages with segmented stats
-category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
-os.makedirs(category_dir, exist_ok=True)
-
-summary_df = (
-    df.groupby(["Position_Category", "Career_Level", "Domain"])
-    .agg(Frequency=("ID_No", "count"))
-    .reset_index()
-)
-summary_df["Normalized_Category"] = summary_df["Position_Category"].apply(normalize_name)
-
-for category in summary_df["Normalized_Category"].unique():
-    subset = summary_df[summary_df["Normalized_Category"] == category]
-    original_name = subset["Position_Category"].iloc[0]
-
-    stats_rows = ""
-    for _, row in subset.iterrows():
-        stats_rows += f"<li>{row['Domain']} - {row['Career_Level']} → {row['Frequency']}</li>"
-
-    html = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{original_name}</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; padding: 2rem; background-color: #ffffff; color: #333333; }}
-        h1 {{ color: #2c3e50; }}
-        ul {{ padding-left: 1.2rem; }}
-        .stats {{ margin-top: 1rem; }}
-    </style>
-</head>
-<body>
-    <h1>{original_name}</h1>
-    <p>This page includes detailed data combinations for the <strong>{original_name}</strong> category.</p>
-    <hr>
-    <div class="stats">
-        <h3>Stats (by Domain and Career Level):</h3>
-        <ul>
-            {stats_rows}
-        </ul>
-    </div>
-</body>
-</html>"""
-
-    file_path = os.path.join(category_dir, f"{category}.html")
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(html)
-
-print(f"✅ Generated category pages in: {category_dir}")
+print(f"\u2705 Radial map embedded and saved to: {output_path}")
