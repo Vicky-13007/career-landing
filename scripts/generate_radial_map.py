@@ -1,16 +1,19 @@
+# Revised radial map generator to:
+# - Plot each (Position_Category + Career_Level + Domain) combo as a dot
+# - Size each dot by the count of unique ID_No
+# - Link dots (dashed lines) if same ID_No appears in multiple domains for the same category + level
+
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
 import re
 import os
 
-# Load CSV
+# Load and clean data
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
-
-# Exclude Advanced Career
 df = df[df["Career_Level"] != "Advanced Career"]
 
-# Normalize for filenames
+# Normalize names for URLs
 def normalize_name(name):
     name = str(name).lower().strip()
     name = re.sub(r'\s+', ' ', name)
@@ -18,12 +21,9 @@ def normalize_name(name):
     return name.replace(' ', '_')
 
 df["Normalized_Category"] = df["Position_Category"].apply(normalize_name)
-
-# Map career level to rings
 career_map = {"Early Career": 1, "Established Career": 2}
 df["Radius"] = df["Career_Level"].map(career_map)
 
-# Quadrant angular setup
 quadrant_angles = {
     "Health Classification": (0, 90),
     "Health Information Management": (90, 180),
@@ -31,29 +31,23 @@ quadrant_angles = {
     "Health Data Analysis": (270, 360)
 }
 
-# Assign angles per domain-category
+# Assign angle by domain/category
 angle_lookup = {}
 for domain, (start, end) in quadrant_angles.items():
     domain_data = df[df["Domain"] == domain]
-    categories = sorted(domain_data["Position_Category"].dropna().unique())
-    step = (end - start) / max(len(categories), 1)
-    for i, cat in enumerate(categories):
-        angle_lookup[(domain, cat)] = start + step / 2 + i * step
+    cats = sorted(domain_data["Position_Category"].dropna().unique())
+    step = (end - start) / max(len(cats), 1)
+    for i, cat in enumerate(cats):
+        angle_lookup[(domain, cat)] = start + step/2 + i*step
 
 df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"]), 0), axis=1)
 
-# Frequency calculation
-df["Frequency"] = df.groupby(["Domain", "Position_Category"])["Position_Category"].transform("count")
-
-# Drop duplicates 
-df = df.sort_values("Frequency", ascending=False).drop_duplicates(subset=["Domain", "Position_Category"])
-
-# Top 10 categories per domain
-top_categories = df.groupby("Domain").head(10)
+# Frequency by unique ID_No count
+dot_data = df.groupby(["Domain", "Position_Category", "Career_Level", "Normalized_Category", "Radius", "Theta"]) \
+             .agg(ID_Count=("ID_No", pd.Series.nunique)).reset_index()
 
 # Plot
 fig = go.Figure()
-
 domain_colors = {
     "Health Classification": "#EF553B",
     "Health Information Management": "#00CC96",
@@ -61,14 +55,14 @@ domain_colors = {
     "Health Data Analysis": "#FFA15A"
 }
 
-for _, row in top_categories.iterrows():
+for _, row in dot_data.iterrows():
     link = f"categories/{row['Normalized_Category']}.html"
     fig.add_trace(go.Scatterpolar(
         r=[row["Radius"]],
         theta=[row["Theta"]],
         mode="markers",
         marker=dict(
-            size=14,
+            size=6 + row["ID_Count"] * 2,
             color=domain_colors.get(row["Domain"], "#636efa"),
             line=dict(color="#000000", width=1.2),
             opacity=0.95
@@ -79,24 +73,26 @@ for _, row in top_categories.iterrows():
         name=""
     ))
 
-# Add connecting lines for categories shared across domains
-shared = top_categories.groupby("Position_Category").filter(lambda g: len(g["Domain"].unique()) > 1)
-
-for _, group in shared.groupby("Position_Category"):
-    r_vals = group["Radius"].tolist()
-    theta_vals = group["Theta"].tolist()
-    if len(r_vals) > 1:
-        paired = sorted(zip(theta_vals, r_vals))
-        theta_sorted, r_sorted = zip(*paired)
-        fig.add_trace(go.Scatterpolar(
-            r=r_sorted,
-            theta=theta_sorted,
-            mode="lines",
-            line=dict(color="white", width=1.2, dash="dot"),
-            opacity=0.5,
-            hoverinfo="none",
-            showlegend=False
-        ))
+# Connecting same ID_No across domains
+pairs = df.groupby("ID_No")
+for _, group in pairs:
+    if group.shape[0] > 1:
+        unique_roles = group.groupby(["Position_Category", "Career_Level"])
+        for _, role_grp in unique_roles:
+            if len(role_grp["Domain"].unique()) > 1:
+                coords = role_grp.drop_duplicates(subset=["Domain"])[["Radius", "Theta"]].values.tolist()
+                if len(coords) > 1:
+                    coords.sort(key=lambda x: x[1])
+                    r_vals, theta_vals = zip(*coords)
+                    fig.add_trace(go.Scatterpolar(
+                        r=r_vals,
+                        theta=theta_vals,
+                        mode="lines",
+                        line=dict(color="white", width=1.2, dash="dot"),
+                        opacity=0.5,
+                        hoverinfo="none",
+                        showlegend=False
+                    ))
 
 fig.update_layout(
     title="Top Position Categories Across Health Career Domains",
@@ -109,7 +105,6 @@ fig.update_layout(
             range=[0.5, 2.5],
             gridcolor="#555555",
             gridwidth=1.3,
-            showline=False,
             tickfont=dict(color="#FFFFFF")
         ),
         angularaxis=dict(
@@ -129,92 +124,11 @@ fig.update_layout(
     height=1000
 )
 
-# Export only chart HTML
+# Inject into HTML
 chart_html = fig.to_html(include_plotlyjs="cdn", full_html=False, div_id="map-container")
-
-# Inject chart into template
-template_path = "../template/index_template.html"
-with open(template_path, "r", encoding="utf-8") as f:
+with open("../template/index_template.html", "r", encoding="utf-8") as f:
     base_template = f.read()
-
 final_output = base_template.replace("<!--RADIAL_MAP-->", chart_html)
-
-# Save final index.html
-output_path = "../index.html"
-with open(output_path, "w", encoding="utf-8") as f:
+with open("../index.html", "w", encoding="utf-8") as f:
     f.write(final_output)
-
-print(f"Radial map embedded and saved to: {output_path}")
-
-# Generate category HTML pages
-category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
-os.makedirs(category_dir, exist_ok=True)
-
-summary_df = (
-    df.groupby("Position_Category")
-    .agg(
-        Frequency=("Position_Category", "count"),
-        Domains=("Domain", lambda x: ', '.join(sorted(set(x)))),
-        Career_Levels=("Career_Level", lambda x: ', '.join(sorted(set(x))))
-    )
-    .reset_index()
-)
-summary_df["Normalized_Category"] = summary_df["Position_Category"].apply(normalize_name)
-summary_df = summary_df.drop_duplicates("Normalized_Category")
-summary_dict = summary_df.set_index("Normalized_Category").to_dict("index")
-
-def generate_html(category_name, frequency, domains, career_levels):
-    return f"""<!DOCTYPE html>
-<html lang=\"en\">
-<head>
-    <meta charset=\"UTF-8\">
-    <title>{category_name}</title>
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            padding: 2rem;
-            background-color: #ffffff;
-            color: #333333;
-        }}
-        h1 {{
-            color: #2c3e50;
-        }}
-        .stats {{
-            animation: slideFadeIn 0.8s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }}
-        @keyframes slideFadeIn {{
-            to {{
-                opacity: 1;
-                transform: translateY(0);
-            }}
-        }}
-    </style>
-</head>
-<body>
-    <h1>{category_name}</h1>
-    <p>This page will include detailed information about the <strong>{category_name}</strong> category.</p>
-    <p>You can describe example job roles, required skills, career progression, and domain-specific insights here.</p>
-    <hr>
-    <div class=\"stats\">
-        <h3>Stats:</h3>
-        <p><strong>Frequency:</strong> {frequency}</p>
-        <p><strong>Appears in Domains:</strong> {domains}</p>
-        <p><strong>Career Levels:</strong> {career_levels}</p>
-    </div>
-</body>
-</html>"""
-
-for original, data in summary_dict.items():
-    html = generate_html(
-        category_name=summary_df[summary_df["Normalized_Category"] == original]["Position_Category"].values[0],
-        frequency=data["Frequency"],
-        domains=data["Domains"],
-        career_levels=data["Career_Levels"]
-    )
-    file_path = os.path.join(category_dir, f"{original}.html")
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(html)
-
-print(f"Generated {len(summary_dict)} category pages in: {category_dir}")
+print("✅ Radial map generated and saved to: ../index.html")
