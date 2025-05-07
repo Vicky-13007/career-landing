@@ -10,7 +10,7 @@ df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
 # Filter out 'Advanced Career'
 df = df[df["Career_Level"] != "Advanced Career"]
 
-# Normalize position category names
+# Normalize for filenames
 def normalize_name(name):
     name = str(name).lower().strip()
     name = re.sub(r'\s+', ' ', name)
@@ -42,7 +42,7 @@ for domain, (start, end) in quadrant_angles.items():
 
 df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"], row["Career_Level"]), 0), axis=1)
 
-# Count frequency per unique dot (Domain + Category + Career Level)
+# Count frequency per unique dot
 freq_df = (
     df.groupby(["Position_Category", "Career_Level", "Domain"])
     .agg(Frequency=("ID_No", "count"))
@@ -64,7 +64,6 @@ domain_colors = {
 
 for _, row in freq_df.iterrows():
     link = f"categories/{row['Normalized_Category']}.html"
-    custom = f"{row['Domain']}||{row['Position_Category']}||{row['Career_Level']}||{link}"
     fig.add_trace(go.Scatterpolar(
         r=[row["Radius"]],
         theta=[row["Theta"]],
@@ -77,14 +76,13 @@ for _, row in freq_df.iterrows():
         ),
         hovertext=f"{row['Position_Category']} ({row['Domain']}, {row['Career_Level']})",
         hoverinfo="text",
-        customdata=[[custom]],
+        customdata=[[row["Domain"], row["Position_Category"], row["Career_Level"], link]],
         name=""
     ))
 
-# Connect dots with same ID_No and same category/career level but across domains
-shared_ids = (
-    df.groupby("ID_No")
-    .filter(lambda g: g[["Position_Category", "Career_Level"]].nunique().eq(1).all() and g["Domain"].nunique() > 1)
+# Add dashed links between duplicate IDs across domains
+shared_ids = df.groupby("ID_No").filter(
+    lambda g: g[["Position_Category", "Career_Level"]].nunique().eq(1).all() and g["Domain"].nunique() > 1
 )
 
 for _, group in shared_ids.groupby("ID_No"):
@@ -114,7 +112,6 @@ fig.update_layout(
             range=[0.5, 2.5],
             gridcolor="#555555",
             gridwidth=1.3,
-            showline=False,
             tickfont=dict(color="#FFFFFF")
         ),
         angularaxis=dict(
@@ -134,8 +131,10 @@ fig.update_layout(
     height=1000
 )
 
-# Embed radial map into index.html
+# Save radial chart HTML
 chart_html = fig.to_html(include_plotlyjs="cdn", full_html=False, div_id="map-container")
+
+# Inject into template
 template_path = "../template/index_template.html"
 with open(template_path, "r", encoding="utf-8") as f:
     base_template = f.read()
@@ -144,4 +143,53 @@ final_output = base_template.replace("<!--RADIAL_MAP-->", chart_html)
 output_path = "../index.html"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(final_output)
-print(f"\u2705 Radial map embedded and saved to: {output_path}")
+
+print(f"✅ Radial map saved to: {output_path}")
+
+# Generate category detail pages
+category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
+os.makedirs(category_dir, exist_ok=True)
+
+summary_df = (
+    df.groupby(["Position_Category", "Career_Level", "Domain"])
+    .agg(Frequency=("ID_No", "count"))
+    .reset_index()
+)
+summary_df["Normalized_Category"] = summary_df["Position_Category"].apply(normalize_name)
+
+for category in summary_df["Normalized_Category"].unique():
+    subset = summary_df[summary_df["Normalized_Category"] == category]
+    original_name = subset["Position_Category"].iloc[0]
+
+    stats_rows = ""
+    for _, row in subset.iterrows():
+        stats_rows += f"<li>{row['Domain']} – {row['Career_Level']} → {row['Frequency']}</li>"
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{original_name}</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; padding: 2rem; background-color: #ffffff; color: #333333; }}
+        h1 {{ color: #2c3e50; }}
+        ul {{ padding-left: 1.2rem; }}
+        .stats {{ margin-top: 1rem; }}
+    </style>
+</head>
+<body>
+    <h1>{original_name}</h1>
+    <p>This page shows all career levels and domains associated with <strong>{original_name}</strong>.</p>
+    <hr>
+    <div class="stats">
+        <h3>Breakdown:</h3>
+        <ul>{stats_rows}</ul>
+    </div>
+</body>
+</html>"""
+
+    path = os.path.join(category_dir, f"{category}.html")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(html)
+
+print(f"✅ Category pages saved in: {category_dir}")
