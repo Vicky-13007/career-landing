@@ -8,6 +8,7 @@ import os
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
 df = df[df["Career_Level"] != "Advanced Career"]
 
+# Normalize
 def normalize_name(name):
     name = str(name).lower().strip()
     name = re.sub(r'\s+', ' ', name)
@@ -25,6 +26,7 @@ quadrant_angles = {
     "Health Data Analysis": (270, 360)
 }
 
+# Theta mapping
 angle_lookup = {}
 for domain, (start, end) in quadrant_angles.items():
     domain_data = df[df["Domain"] == domain]
@@ -35,7 +37,7 @@ for domain, (start, end) in quadrant_angles.items():
 
 df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"], row["Career_Level"]), 0), axis=1)
 
-# Frequency per unique dot
+# Frequency per unique point
 freq_df = (
     df.groupby(["Position_Category", "Career_Level", "Domain"])
     .agg(Frequency=("ID_No", "count"))
@@ -45,6 +47,7 @@ freq_df["Normalized_Category"] = freq_df["Position_Category"].apply(normalize_na
 freq_df["Radius"] = freq_df["Career_Level"].map(career_map)
 freq_df["Theta"] = freq_df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"], row["Career_Level"]), 0), axis=1)
 
+# Plot
 fig = go.Figure()
 domain_colors = {
     "Health Classification": "#EF553B",
@@ -55,6 +58,7 @@ domain_colors = {
 
 for _, row in freq_df.iterrows():
     link = f"categories/{row['Normalized_Category']}.html"
+    custom_string = f"{row['Domain']}||{row['Position_Category']}||{row['Career_Level']}||{link}"
     fig.add_trace(go.Scatterpolar(
         r=[row["Radius"]],
         theta=[row["Theta"]],
@@ -67,10 +71,11 @@ for _, row in freq_df.iterrows():
         ),
         hovertext=f"{row['Position_Category']} ({row['Domain']}, {row['Career_Level']})",
         hoverinfo="text",
-        customdata=[[row["Domain"], row["Position_Category"], row["Career_Level"], link]],
+        customdata=[custom_string],
         name=""
     ))
 
+# Shared ID lines
 shared_ids = (
     df.groupby("ID_No")
     .filter(lambda g: g[["Position_Category", "Career_Level"]].nunique().eq(1).all() and g["Domain"].nunique() > 1)
@@ -91,6 +96,7 @@ for _, group in shared_ids.groupby("ID_No"):
             showlegend=False
         ))
 
+# Layout
 fig.update_layout(
     title="Top Position Categories Across Health Career Domains",
     polar=dict(
@@ -102,7 +108,6 @@ fig.update_layout(
             range=[0.5, 2.5],
             gridcolor="#555555",
             gridwidth=1.3,
-            showline=False,
             tickfont=dict(color="#FFFFFF")
         ),
         angularaxis=dict(
@@ -122,18 +127,18 @@ fig.update_layout(
     height=1000
 )
 
+# Inject into index
 chart_html = fig.to_html(include_plotlyjs="cdn", full_html=False, div_id="map-container")
 template_path = "../template/index_template.html"
 with open(template_path, "r", encoding="utf-8") as f:
     base_template = f.read()
-
 final_output = base_template.replace("<!--RADIAL_MAP-->", chart_html)
 output_path = "../index.html"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(final_output)
 print(f"✅ Radial map embedded and saved to: {output_path}")
 
-# Category pages
+# Generate HTML for categories
 category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
 os.makedirs(category_dir, exist_ok=True)
 
