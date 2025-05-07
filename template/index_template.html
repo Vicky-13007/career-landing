@@ -159,7 +159,6 @@
       }
 
       if (plot && plot.data) {
-        // Populate category filter
         const categories = new Set();
         plot.data.forEach(trace => {
           if (trace.customdata && trace.customdata[0]) {
