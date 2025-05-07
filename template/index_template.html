@@ -112,22 +112,15 @@
     <div class="filters">
       <select id="career-filter">
         <option value="All">All Career Levels</option>
-        <option value="Early Career">Early Career</option>
-        <option value="Established Career">Established Career</option>
       </select>
       <select id="domain-filter">
         <option value="All">All Domains</option>
-        <option value="Health Classification">Health Classification</option>
-        <option value="Health Information Management">Health Information Management</option>
-        <option value="Health Informatics">Health Informatics</option>
-        <option value="Health Data Analysis">Health Data Analysis</option>
       </select>
       <select id="category-filter">
         <option value="All">All Categories</option>
       </select>
     </div>
 
-    <!-- Radial Map Injected -->
     <div id="map-container" class="shrinked-chart">
       <!--RADIAL_MAP-->
     </div>
@@ -142,38 +135,60 @@
     document.addEventListener("DOMContentLoaded", function () {
       const plot = document.querySelector('.js-plotly-plot');
 
+      function populateFilters() {
+        const domains = new Set();
+        const careers = new Set();
+        const categories = new Set();
+
+        plot.data.forEach(trace => {
+          if (trace.customdata?.[0]) {
+            const [domain, category, career] = trace.customdata[0];
+            domains.add(domain);
+            careers.add(career);
+            categories.add(category);
+          }
+        });
+
+        const fillSelect = (id, values) => {
+          const select = document.getElementById(id);
+          values.sort().forEach(val => {
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = val;
+            select.appendChild(opt);
+          });
+        };
+
+        fillSelect("career-filter", Array.from(careers));
+        fillSelect("domain-filter", Array.from(domains));
+        fillSelect("category-filter", Array.from(categories));
+      }
+
       function applyFilters() {
         const career = document.getElementById('career-filter').value;
         const domain = document.getElementById('domain-filter').value;
         const category = document.getElementById('category-filter').value;
 
         const update = { visible: [] };
+
         plot.data.forEach(trace => {
-          const [d, c, k, _] = trace.customdata[0];
-          const show = (career === 'All' || k === career) &&
-                       (domain === 'All' || d === domain) &&
-                       (category === 'All' || c === category);
-          update.visible.push(show);
+          if (trace.customdata?.[0]) {
+            const [d, c, k] = trace.customdata[0];
+            const match =
+              (career === 'All' || k === career) &&
+              (domain === 'All' || d === domain) &&
+              (category === 'All' || c === category);
+            update.visible.push(match);
+          } else {
+            update.visible.push(false);
+          }
         });
+
         Plotly.update(plot, update);
       }
 
       if (plot && plot.data) {
-        const categories = new Set();
-        plot.data.forEach(trace => {
-          if (trace.customdata && trace.customdata[0]) {
-            const parts = trace.customdata[0];
-            categories.add(parts[1]);
-          }
-        });
-
-        const categorySelect = document.getElementById('category-filter');
-        Array.from(categories).sort().forEach(cat => {
-          const opt = document.createElement('option');
-          opt.value = cat;
-          opt.textContent = cat;
-          categorySelect.appendChild(opt);
-        });
+        populateFilters();
 
         ['career-filter', 'domain-filter', 'category-filter'].forEach(id => {
           document.getElementById(id).addEventListener('change', applyFilters);
@@ -181,8 +196,8 @@
 
         plot.on('plotly_click', function (data) {
           const point = data.points[0];
-          const url = point.customdata[0][3];
-          if (url) window.open(url, '_blank');
+          const link = point.customdata?.[0]?.[3];
+          if (link) window.open(link, '_blank');
         });
       }
     });
