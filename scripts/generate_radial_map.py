@@ -48,8 +48,7 @@ df["Frequency"] = df.groupby(["Domain", "Position_Category", "Career_Level"])["I
 # Drop duplicates so each dot is unique in Domain + Role + Career level
 df = df.sort_values("Frequency", ascending=False).drop_duplicates(subset=["Domain", "Position_Category", "Career_Level"])
 
-# Top 10 categories per domain (based on total frequency)
-top_categories = df.groupby("Domain").apply(lambda x: x.nlargest(10, "Frequency")).reset_index(drop=True)
+top_categories = df.copy()  # To show all dots
 
 # Plot setup
 fig = go.Figure()
