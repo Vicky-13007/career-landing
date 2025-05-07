@@ -31,7 +31,7 @@ quadrant_angles = {
     "Health Data Analysis": (270, 360)
 }
 
-# Assign angles per domain-category
+# Assign angles to each domain-category pair
 angle_lookup = {}
 for domain, (start, end) in quadrant_angles.items():
     domain_data = df[df["Domain"] == domain]
@@ -42,16 +42,23 @@ for domain, (start, end) in quadrant_angles.items():
 
 df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"]), 0), axis=1)
 
-# Frequency for marker size (based on full combination)
-df["Frequency"] = df.groupby(["Domain", "Position_Category", "Career_Level"])["ID_No"].transform("count")
+# Get frequency per unique dot (domain + category + level)
+dot_counts = (
+    df.groupby(["Position_Category", "Domain", "Career_Level"])
+    .agg(
+        Frequency=("ID_No", "count"),
+        Record_IDs=("ID_No", list)
+    )
+    .reset_index()
+)
 
-# Drop duplicates so each dot is unique in Domain + Role + Career level
-df = df.sort_values("Frequency", ascending=False).drop_duplicates(subset=["Domain", "Position_Category", "Career_Level"])
-
-top_categories = df.copy()  # To show all dots
+dot_counts["Normalized_Category"] = dot_counts["Position_Category"].apply(normalize_name)
+dot_counts["Radius"] = dot_counts["Career_Level"].map(career_map)
+dot_counts["Theta"] = dot_counts.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"]), 0), axis=1)
 
 # Plot setup
 fig = go.Figure()
+
 domain_colors = {
     "Health Classification": "#EF553B",
     "Health Information Management": "#00CC96",
@@ -59,15 +66,15 @@ domain_colors = {
     "Health Data Analysis": "#FFA15A"
 }
 
-# Plot each marker
-for _, row in top_categories.iterrows():
+# Add dots
+for _, row in dot_counts.iterrows():
     link = f"categories/{row['Normalized_Category']}.html"
     fig.add_trace(go.Scatterpolar(
         r=[row["Radius"]],
         theta=[row["Theta"]],
         mode="markers",
         marker=dict(
-            size=6 + row["Frequency"] * 3,  # dynamic sizing
+            size=8 + 4 * row["Frequency"],  # scalable size
             color=domain_colors.get(row["Domain"], "#636efa"),
             line=dict(color="#000000", width=1.2),
             opacity=0.95
@@ -78,24 +85,34 @@ for _, row in top_categories.iterrows():
         name=""
     ))
 
-# Draw lines between dots with same Record ID, Role, and Level but different domains
-link_candidates = df[["ID_No", "Position_Category", "Career_Level", "Domain", "Radius", "Theta"]]
-grouped = link_candidates.groupby(["ID_No", "Position_Category", "Career_Level"])
-
-for _, group in grouped:
-    if group["Domain"].nunique() > 1 and len(group) > 1:
-        sorted_group = group.sort_values("Theta")
-        r_vals = sorted_group["Radius"].tolist()
-        theta_vals = sorted_group["Theta"].tolist()
-        fig.add_trace(go.Scatterpolar(
-            r=r_vals,
-            theta=theta_vals,
-            mode="lines",
-            line=dict(color="white", width=1.3, dash="dot"),
-            opacity=0.5,
-            hoverinfo="none",
-            showlegend=False
-        ))
+# Add connecting lines based on matching ID_No
+connected_lines = []
+grouped = df.groupby("ID_No")
+for id_no, group in grouped:
+    if len(group) < 2:
+        continue
+    base_columns = ["Position_Category", "Career_Level"]
+    if group[base_columns].nunique().eq(1).all():
+        # Valid only if same category/level, but different domain
+        domains_seen = set()
+        for _, row_a in group.iterrows():
+            for _, row_b in group.iterrows():
+                if row_a["Domain"] != row_b["Domain"] and row_b["Domain"] not in domains_seen:
+                    r_vals = [career_map[row_a["Career_Level"]], career_map[row_b["Career_Level"]]]
+                    theta_vals = [
+                        angle_lookup.get((row_a["Domain"], row_a["Position_Category"]), 0),
+                        angle_lookup.get((row_b["Domain"], row_b["Position_Category"]), 0)
+                    ]
+                    fig.add_trace(go.Scatterpolar(
+                        r=r_vals,
+                        theta=theta_vals,
+                        mode="lines",
+                        line=dict(color="white", width=1, dash="dot"),
+                        opacity=0.45,
+                        hoverinfo="none",
+                        showlegend=False
+                    ))
+            domains_seen.add(row_a["Domain"])
 
 # Layout
 fig.update_layout(
@@ -109,7 +126,6 @@ fig.update_layout(
             range=[0.5, 2.5],
             gridcolor="#555555",
             gridwidth=1.3,
-            showline=False,
             tickfont=dict(color="#FFFFFF")
         ),
         angularaxis=dict(
@@ -129,24 +145,24 @@ fig.update_layout(
     height=1000
 )
 
-# Export to HTML
+# Export radial map HTML only
 chart_html = fig.to_html(include_plotlyjs="cdn", full_html=False, div_id="map-container")
 
-# Inject into index.html
+# Inject radial map into template
 template_path = "../template/index_template.html"
 with open(template_path, "r", encoding="utf-8") as f:
     base_template = f.read()
 
 final_output = base_template.replace("<!--RADIAL_MAP-->", chart_html)
 
-# Save final index.html
+# Save final output
 output_path = "../index.html"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(final_output)
 
 print(f"✅ Radial map embedded and saved to: {output_path}")
 
-# Generate static category HTML pages
+# === Generate Category Pages ===
 category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
 os.makedirs(category_dir, exist_ok=True)
 
@@ -165,44 +181,44 @@ summary_dict = summary_df.set_index("Normalized_Category").to_dict("index")
 
 def generate_html(category_name, frequency, domains, career_levels):
     return f"""<!DOCTYPE html>
-<html lang=\"en\">
+<html lang="en">
 <head>
-    <meta charset=\"UTF-8\">
-    <title>{category_name}</title>
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            padding: 2rem;
-            background-color: #ffffff;
-            color: #333333;
-        }}
-        h1 {{
-            color: #2c3e50;
-        }}
-        .stats {{
-            animation: slideFadeIn 0.8s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }}
-        @keyframes slideFadeIn {{
-            to {{
-                opacity: 1;
-                transform: translateY(0);
-            }}
-        }}
-    </style>
+  <meta charset="UTF-8">
+  <title>{category_name}</title>
+  <style>
+    body {{
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #ffffff;
+      color: #333333;
+    }}
+    h1 {{
+      color: #2c3e50;
+    }}
+    .stats {{
+      animation: slideFadeIn 0.8s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }}
+    @keyframes slideFadeIn {{
+      to {{
+        opacity: 1;
+        transform: translateY(0);
+      }}
+    }}
+  </style>
 </head>
 <body>
-    <h1>{category_name}</h1>
-    <p>This page will include detailed information about the <strong>{category_name}</strong> category.</p>
-    <p>You can describe example job roles, required skills, career progression, and domain-specific insights here.</p>
-    <hr>
-    <div class=\"stats\">
-        <h3>Stats:</h3>
-        <p><strong>Frequency:</strong> {frequency}</p>
-        <p><strong>Appears in Domains:</strong> {domains}</p>
-        <p><strong>Career Levels:</strong> {career_levels}</p>
-    </div>
+  <h1>{category_name}</h1>
+  <p>This page will include detailed information about the <strong>{category_name}</strong> category.</p>
+  <p>You can describe example job roles, required skills, career progression, and domain-specific insights here.</p>
+  <hr>
+  <div class="stats">
+    <h3>Stats:</h3>
+    <p><strong>Frequency:</strong> {frequency}</p>
+    <p><strong>Appears in Domains:</strong> {domains}</p>
+    <p><strong>Career Levels:</strong> {career_levels}</p>
+  </div>
 </body>
 </html>"""
 
