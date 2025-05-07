@@ -6,11 +6,9 @@ import os
 
 # Load data
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
-
-# Filter out 'Advanced Career'
 df = df[df["Career_Level"] != "Advanced Career"]
 
-# Normalize for filenames
+# Normalize
 def normalize_name(name):
     name = str(name).lower().strip()
     name = re.sub(r'\s+', ' ', name)
@@ -18,12 +16,9 @@ def normalize_name(name):
     return name.replace(' ', '_')
 
 df["Normalized_Category"] = df["Position_Category"].apply(normalize_name)
-
-# Map career level to radial positions
 career_map = {"Early Career": 1, "Established Career": 2}
 df["Radius"] = df["Career_Level"].map(career_map)
 
-# Assign angular range for each domain
 quadrant_angles = {
     "Health Classification": (0, 90),
     "Health Information Management": (90, 180),
@@ -31,7 +26,7 @@ quadrant_angles = {
     "Health Data Analysis": (270, 360)
 }
 
-# Assign theta angles per domain-category-career_level
+# Theta mapping
 angle_lookup = {}
 for domain, (start, end) in quadrant_angles.items():
     domain_data = df[df["Domain"] == domain]
@@ -42,7 +37,7 @@ for domain, (start, end) in quadrant_angles.items():
 
 df["Theta"] = df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"], row["Career_Level"]), 0), axis=1)
 
-# Count frequency per unique dot
+# Frequency per unique point
 freq_df = (
     df.groupby(["Position_Category", "Career_Level", "Domain"])
     .agg(Frequency=("ID_No", "count"))
@@ -52,9 +47,8 @@ freq_df["Normalized_Category"] = freq_df["Position_Category"].apply(normalize_na
 freq_df["Radius"] = freq_df["Career_Level"].map(career_map)
 freq_df["Theta"] = freq_df.apply(lambda row: angle_lookup.get((row["Domain"], row["Position_Category"], row["Career_Level"]), 0), axis=1)
 
-# Plot radial map
+# Plot
 fig = go.Figure()
-
 domain_colors = {
     "Health Classification": "#EF553B",
     "Health Information Management": "#00CC96",
@@ -64,6 +58,7 @@ domain_colors = {
 
 for _, row in freq_df.iterrows():
     link = f"categories/{row['Normalized_Category']}.html"
+    custom_string = f"{row['Domain']}||{row['Position_Category']}||{row['Career_Level']}||{link}"
     fig.add_trace(go.Scatterpolar(
         r=[row["Radius"]],
         theta=[row["Theta"]],
@@ -76,13 +71,14 @@ for _, row in freq_df.iterrows():
         ),
         hovertext=f"{row['Position_Category']} ({row['Domain']}, {row['Career_Level']})",
         hoverinfo="text",
-        customdata=[[row["Domain"], row["Position_Category"], row["Career_Level"], link]],
+        customdata=[custom_string],
         name=""
     ))
 
-# Add dashed links between duplicate IDs across domains
-shared_ids = df.groupby("ID_No").filter(
-    lambda g: g[["Position_Category", "Career_Level"]].nunique().eq(1).all() and g["Domain"].nunique() > 1
+# Shared ID lines
+shared_ids = (
+    df.groupby("ID_No")
+    .filter(lambda g: g[["Position_Category", "Career_Level"]].nunique().eq(1).all() and g["Domain"].nunique() > 1)
 )
 
 for _, group in shared_ids.groupby("ID_No"):
@@ -131,22 +127,18 @@ fig.update_layout(
     height=1000
 )
 
-# Save radial chart HTML
+# Inject into index
 chart_html = fig.to_html(include_plotlyjs="cdn", full_html=False, div_id="map-container")
-
-# Inject into template
 template_path = "../template/index_template.html"
 with open(template_path, "r", encoding="utf-8") as f:
     base_template = f.read()
-
 final_output = base_template.replace("<!--RADIAL_MAP-->", chart_html)
 output_path = "../index.html"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(final_output)
+print(f"✅ Radial map embedded and saved to: {output_path}")
 
-print(f"✅ Radial map saved to: {output_path}")
-
-# Generate category detail pages
+# Generate HTML for categories
 category_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
 os.makedirs(category_dir, exist_ok=True)
 
@@ -163,7 +155,7 @@ for category in summary_df["Normalized_Category"].unique():
 
     stats_rows = ""
     for _, row in subset.iterrows():
-        stats_rows += f"<li>{row['Domain']} – {row['Career_Level']} → {row['Frequency']}</li>"
+        stats_rows += f"<li>{row['Domain']} - {row['Career_Level']} → {row['Frequency']}</li>"
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -179,17 +171,19 @@ for category in summary_df["Normalized_Category"].unique():
 </head>
 <body>
     <h1>{original_name}</h1>
-    <p>This page shows all career levels and domains associated with <strong>{original_name}</strong>.</p>
+    <p>This page includes detailed data combinations for the <strong>{original_name}</strong> category.</p>
     <hr>
     <div class="stats">
-        <h3>Breakdown:</h3>
-        <ul>{stats_rows}</ul>
+        <h3>Stats (by Domain and Career Level):</h3>
+        <ul>
+            {stats_rows}
+        </ul>
     </div>
 </body>
 </html>"""
 
-    path = os.path.join(category_dir, f"{category}.html")
-    with open(path, "w", encoding="utf-8") as f:
+    file_path = os.path.join(category_dir, f"{category}.html")
+    with open(file_path, "w", encoding="utf-8") as f:
         f.write(html)
 
-print(f"✅ Category pages saved in: {category_dir}")
+print(f"✅ Generated category pages in: {category_dir}")

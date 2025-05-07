@@ -10,8 +10,8 @@
       margin: 0;
       font-family: 'Inter', sans-serif;
       background-color: #f9f9f9;
-      overflow-y: auto;
     }
+
     header {
       background-color: #ffffff;
       padding: 1rem 2rem;
@@ -23,24 +23,29 @@
       top: 0;
       z-index: 10;
     }
+
     .logo {
       font-size: 1.4rem;
       font-weight: 700;
       color: #4f46e5;
     }
+
     nav {
       display: flex;
       gap: 1.2rem;
     }
+
     nav a {
       text-decoration: none;
       color: #333;
       font-weight: 500;
       transition: color 0.3s ease;
     }
+
     nav a:hover {
       color: #4f46e5;
     }
+
     #radial-wrapper {
       padding: 2rem 1rem;
       max-width: 1200px;
@@ -50,6 +55,7 @@
       align-items: center;
       gap: 2rem;
     }
+
     .banner-img {
       width: 100%;
       max-width: 800px;
@@ -57,21 +63,26 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.06);
       object-fit: contain;
     }
+
     .shrinked-chart {
       width: 100%;
       max-width: 900px;
       height: 600px;
     }
+
     .filters {
       display: flex;
-      gap: 1rem;
       flex-wrap: wrap;
+      gap: 1rem;
       justify-content: center;
+      margin-top: 1rem;
     }
+
     .filters select {
       padding: 0.5rem 1rem;
       font-size: 1rem;
     }
+
     footer {
       background-color: #f1f1f1;
       text-align: center;
@@ -80,15 +91,18 @@
       font-size: 0.9rem;
       color: #666;
     }
+
     .js-plotly-plot .scatterlayer .trace .points path {
       transition: filter 0.3s ease, transform 0.3s ease;
     }
+
     .js-plotly-plot .scatterlayer .trace .points path:hover {
       filter: drop-shadow(0 0 8px #6366f1);
       transform: scale(1.2);
       animation: pulse 1s infinite;
       cursor: pointer;
     }
+
     @keyframes pulse {
       0% { filter: drop-shadow(0 0 4px #6366f1); }
       50% { filter: drop-shadow(0 0 12px #6366f1); }
@@ -110,12 +124,26 @@
   <main id="radial-wrapper">
     <img src="images/healthfacility.jpg" alt="Health Facility" class="banner-img" />
 
+    <!-- Filter Controls -->
     <div class="filters">
-      <select id="career-filter"><option value="All">All Career Levels</option></select>
-      <select id="domain-filter"><option value="All">All Domains</option></select>
-      <select id="category-filter"><option value="All">All Categories</option></select>
+      <select id="career-filter">
+        <option value="All">All Career Levels</option>
+        <option value="Early Career">Early Career</option>
+        <option value="Established Career">Established Career</option>
+      </select>
+      <select id="domain-filter">
+        <option value="All">All Domains</option>
+        <option value="Health Classification">Health Classification</option>
+        <option value="Health Information Management">Health Information Management</option>
+        <option value="Health Informatics">Health Informatics</option>
+        <option value="Health Data Analysis">Health Data Analysis</option>
+      </select>
+      <select id="category-filter">
+        <option value="All">All Categories</option>
+      </select>
     </div>
 
+    <!-- Radial Map Container -->
     <div id="map-container" class="shrinked-chart">
       <!--RADIAL_MAP-->
     </div>
@@ -131,54 +159,56 @@
     document.addEventListener("DOMContentLoaded", function () {
       const plot = document.querySelector('.js-plotly-plot');
 
-      const careerSet = new Set();
-      const domainSet = new Set();
-      const categorySet = new Set();
+      if (!plot) return;
 
+      // Populate category filter
+      const categories = new Set();
       plot.data.forEach(trace => {
-        const [domain, category, career] = trace.customdata[0];
-        careerSet.add(career);
-        domainSet.add(domain);
-        categorySet.add(category);
+        const custom = trace.customdata?.[0];
+        if (custom) {
+          const [domain, category, level] = custom.split("||");
+          categories.add(category);
+        }
       });
 
-      function populateSelect(id, options) {
-        const select = document.getElementById(id);
-        options.forEach(opt => {
-          const o = document.createElement('option');
-          o.value = opt;
-          o.textContent = opt;
-          select.appendChild(o);
-        });
-      }
+      const categorySelect = document.getElementById('category-filter');
+      [...categories].sort().forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+      });
 
-      populateSelect('career-filter', [...careerSet].sort());
-      populateSelect('domain-filter', [...domainSet].sort());
-      populateSelect('category-filter', [...categorySet].sort());
-
+      // Filter function
       function applyFilters() {
-        const c = document.getElementById("career-filter").value;
-        const d = document.getElementById("domain-filter").value;
-        const k = document.getElementById("category-filter").value;
+        const selectedCareer = document.getElementById('career-filter').value;
+        const selectedDomain = document.getElementById('domain-filter').value;
+        const selectedCategory = document.getElementById('category-filter').value;
 
-        const newVisibility = plot.data.map(trace => {
-          const [td, tk, tc] = trace.customdata[0];
-          return (c === "All" || tc === c) &&
-                 (d === "All" || td === d) &&
-                 (k === "All" || tk === k);
+        const visibility = plot.data.map(trace => {
+          const custom = trace.customdata?.[0];
+          if (!custom) return false;
+          const [domain, category, level] = custom.split("||");
+          return (selectedCareer === 'All' || level === selectedCareer)
+              && (selectedDomain === 'All' || domain === selectedDomain)
+              && (selectedCategory === 'All' || category === selectedCategory);
         });
 
-        Plotly.restyle(plot, { visible: newVisibility });
+        Plotly.update(plot, { visible: visibility });
       }
 
-      ['career-filter', 'domain-filter', 'category-filter'].forEach(id =>
-        document.getElementById(id).addEventListener("change", applyFilters)
-      );
+      // Attach filters
+      ['career-filter', 'domain-filter', 'category-filter'].forEach(id => {
+        document.getElementById(id).addEventListener('change', applyFilters);
+      });
 
-      plot.on("plotly_click", function (data) {
-        const point = data.points[0];
-        const url = point.customdata[0][3];
-        if (url) window.open(url, "_blank");
+      // Click navigation
+      plot.on('plotly_click', function (data) {
+        const custom = data.points[0]?.customdata;
+        if (custom) {
+          const link = custom.split("||")[3];
+          if (link) window.open(link, '_blank');
+        }
       });
     });
   </script>
