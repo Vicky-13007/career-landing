@@ -133,74 +133,53 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const plot = document.querySelector('.js-plotly-plot');
+  const plot = document.querySelector('.js-plotly-plot');
 
-      function populateFilters() {
-        const domains = new Set();
-        const careers = new Set();
-        const categories = new Set();
+  function applyFilters() {
+    const career = document.getElementById('career-filter').value;
+    const domain = document.getElementById('domain-filter').value;
+    const category = document.getElementById('category-filter').value;
 
-        plot.data.forEach(trace => {
-          if (trace.customdata?.[0]) {
-            const [domain, category, career] = trace.customdata[0];
-            domains.add(domain);
-            careers.add(career);
-            categories.add(category);
-          }
-        });
+    const update = { visible: [] };
 
-        const fillSelect = (id, values) => {
-          const select = document.getElementById(id);
-          values.sort().forEach(val => {
-            const opt = document.createElement('option');
-            opt.value = val;
-            opt.textContent = val;
-            select.appendChild(opt);
-          });
-        };
+    plot.data.forEach(trace => {
+      const [d, c, k, _] = trace.customdata[0];
+      const show = (career === 'All' || k === career) &&
+                   (domain === 'All' || d === domain) &&
+                   (category === 'All' || c === category);
+      update.visible.push(show);
+    });
 
-        fillSelect("career-filter", Array.from(careers));
-        fillSelect("domain-filter", Array.from(domains));
-        fillSelect("category-filter", Array.from(categories));
-      }
+    Plotly.update(plot, update);
+  }
 
-      function applyFilters() {
-        const career = document.getElementById('career-filter').value;
-        const domain = document.getElementById('domain-filter').value;
-        const category = document.getElementById('category-filter').value;
-
-        const update = { visible: [] };
-
-        plot.data.forEach(trace => {
-          if (trace.customdata?.[0]) {
-            const [d, c, k] = trace.customdata[0];
-            const match =
-              (career === 'All' || k === career) &&
-              (domain === 'All' || d === domain) &&
-              (category === 'All' || c === category);
-            update.visible.push(match);
-          } else {
-            update.visible.push(false);
-          }
-        });
-
-        Plotly.update(plot, update);
-      }
-
-      if (plot && plot.data) {
-        populateFilters();
-
-        ['career-filter', 'domain-filter', 'category-filter'].forEach(id => {
-          document.getElementById(id).addEventListener('change', applyFilters);
-        });
-
-        plot.on('plotly_click', function (data) {
-          const point = data.points[0];
-          const link = point.customdata?.[0]?.[3];
-          if (link) window.open(link, '_blank');
-        });
+  if (plot && plot.data) {
+    const categories = new Set();
+    plot.data.forEach(trace => {
+      if (trace.customdata && trace.customdata[0]) {
+        categories.add(trace.customdata[0][1]);
       }
     });
+
+    const categorySelect = document.getElementById('category-filter');
+    Array.from(categories).sort().forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = cat;
+      categorySelect.appendChild(opt);
+    });
+
+    ['career-filter', 'domain-filter', 'category-filter'].forEach(id => {
+      document.getElementById(id).addEventListener('change', applyFilters);
+    });
+
+    plot.on('plotly_click', function (data) {
+      const url = data.points[0].customdata[0][3];
+      if (url) window.open(url, '_blank');
+    });
+  }
+});
+
   </script>
 </body>
 </html>
