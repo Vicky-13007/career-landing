@@ -88,25 +88,22 @@
       <a href="#">Contact</a>
     </nav>
   </header>
-
   <main id="radial-wrapper">
     <div id="map-container" class="shrinked-chart">
       <!--RADIAL_MAP-->
     </div>
   </main>
-
   <footer>
     &copy; 2025 HIM Pathways Project – All rights reserved.
   </footer>
-
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const plot = document.querySelector('.js-plotly-plot');
       if (plot) {
         plot.on('plotly_click', function (data) {
-          const point = data.points[0];
-          const url = point.customdata[0][1];
-          if (url) window.open(url, '_blank');
+          const tag = data.points[0].customdata;
+          const link = tag.split("||")[1];
+          if (link) window.open(link, '_blank');
         });
       }
     });
