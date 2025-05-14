@@ -8,20 +8,22 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: auto;
+      overflow: hidden;
     }
     #viewport {
-      width: 100%;
-      height: 100%;
-      overflow: scroll;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      position: relative;
     }
     #zoom-layer {
-      width: 2000px;
-      height: 1500px;
+      width: 1800px;
+      height: 1400px;
       background: url('images/healthfacility.jpg') no-repeat center center;
       background-size: cover;
       position: relative;
       transform-origin: 0 0;
+      margin: 0;
     }
     .dot {
       position: absolute;
@@ -31,11 +33,12 @@
       border-radius: 50px;
       font-size: 13px;
       font-weight: bold;
-      box-shadow: 0 0 10px rgba(255,255,255,0.3);
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
       cursor: pointer;
       white-space: nowrap;
       border: 2px solid white;
-      animation: fadeBlink 3s ease-in-out infinite;
+      opacity: 0;
+      animation: fadeInOut 3s ease-in-out infinite;
       transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     }
     .dot:hover {
@@ -43,30 +46,12 @@
       background-color: #ff3b3b;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
-    .dot::after {
-      content: attr(title);
-      position: absolute;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #333;
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 5px;
-      font-size: 12px;
-      opacity: 0;
-      pointer-events: none;
-      white-space: nowrap;
-      transition: opacity 0.3s;
-    }
-    .dot:hover::after {
-      opacity: 1;
-    }
-    @keyframes fadeBlink {
-      0%, 100% { opacity: 0.4; }
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.1; }
       50% { opacity: 1; }
     }
   </style>
+  
 </head>
 <body>
   <div id="viewport">
