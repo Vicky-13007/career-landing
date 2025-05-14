@@ -4,22 +4,17 @@
   <meta charset="UTF-8">
   <title>HIM Career Map</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: auto;
-      height: 100%;
-      width: 100%;
-    }
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: url('images/healthfacility.jpg') no-repeat center center;
-      background-size: cover;
+      overflow: scroll;
     }
-    .map-container {
-      position: relative;
+    #map-container {
       width: 2000px;
       height: 1500px;
+      background: url('../data/images/healthfacility.jpg') no-repeat center center;
+      background-size: cover;
+      position: relative;
     }
     .dot {
       position: absolute;
@@ -39,7 +34,7 @@
   </style>
 </head>
 <body>
-  <div class="map-container">
+  <div id="map-container">
     <!--DOT_CONTAINER-->
   </div>
 </body>
