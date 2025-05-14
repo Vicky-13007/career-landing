@@ -2,54 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>HIM Career Explorer</title>
+  <title>HIM Career Map</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
-      color: #333;
+      padding: 0;
+      height: 100%;
+      overflow: auto;
     }
     nav {
-      background-color: #222;
-      padding: 12px 24px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      background:#222;
+      padding:10px 20px;
+      position:sticky;
+      top:0;
+      z-index:999;
     }
     nav a {
+      color:white;
+      margin-right:20px;
+      text-decoration:none;
+    }
+    #viewport {
+      width: 100%;
+      height: 100%;
+      overflow: scroll;
+    }
+    #zoom-layer {
+      width: 2000px;
+      height: 1500px;
+      background: url('images/healthfacility.jpg') no-repeat center center;
+      background-size: cover;
+      position: relative;
+      transform-origin: 0 0;
+    }
+    .dot {
+      position: absolute;
+      background-color: #000000;
       color: white;
-      margin-right: 20px;
-      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 50px;
+      font-size: 13px;
       font-weight: bold;
+      box-shadow: 0 0 10px rgba(255,255,255,0.3);
+      cursor: pointer;
+      white-space: nowrap;
+      border: 2px solid white;
+      animation: fadeBlink 3s ease-in-out infinite;
+      transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     }
-    .hero {
-      text-align: center;
-      padding: 100px 20px;
+    .dot:hover {
+      transform: scale(1.3) rotate(-2deg);
+      background-color: #ff3b3b;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
-    .hero h1 {
-      font-size: 48px;
-      margin-bottom: 20px;
+    .dot::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity 0.3s;
     }
-    .hero p {
-      font-size: 20px;
-      max-width: 700px;
-      margin: auto;
+    .dot:hover::after {
+      opacity: 1;
     }
-    .cta-button {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 14px 28px;
-      font-size: 18px;
-      background-color: #4f46e5;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-    }
-    .cta-button:hover {
-      background-color: #3730a3;
+    @keyframes fadeBlink {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
     }
   </style>
 </head>
@@ -60,10 +87,21 @@
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </nav>
-  <div class="hero">
-    <h1>Explore Your Future in Health Information Management</h1>
-    <p>Discover interactive career pathways based on real HIM graduate data — designed to guide students, professionals, and educators through diverse roles in the HIM field.</p>
-    <a href="career_map.html" class="cta-button">View Career Map</a>
+  <div id="viewport">
+    <div id="zoom-layer">
+      <!--DOT_CONTAINER-->
+    </div>
   </div>
+  <script>
+    let zoom = 1;
+    document.addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        zoom += e.deltaY * -0.001;
+        zoom = Math.min(Math.max(.5, zoom), 2);
+        document.getElementById('zoom-layer').style.transform = `scale(${zoom})`;
+      }
+    }, { passive: false });
+  </script>
 </body>
 </html>
