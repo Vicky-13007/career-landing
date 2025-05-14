@@ -1,101 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>HIM Career Map</title>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+      background: url('images/healthfacility.jpg') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
     }
-    header {
-      background-color: #ffffff;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .logo {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #4f46e5;
-    }
-    nav {
-      display: flex;
-      gap: 1.2rem;
-    }
-    nav a {
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-    }
-    nav a:hover {
-      color: #4f46e5;
-    }
-    #radial-wrapper {
-      padding: 2rem 1rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .shrinked-chart {
-      width: 100%;
-      max-width: 1000px;
-      height: 700px;
-    }
-    footer {
-      background-color: #f1f1f1;
-      text-align: center;
-      padding: 1.5rem;
-      margin-top: 4rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-    .js-plotly-plot .scatterlayer .trace .points path:hover {
-      filter: drop-shadow(0 0 8px #6366f1);
-      transform: scale(1.2);
+    .dot {
+      position: absolute;
+      background-color: #4f46e5;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-size: 12px;
       cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.2s;
+    }
+    .dot:hover {
+      transform: scale(1.2);
+      background-color: #6366f1;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">HIM Career Map</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#map-container">Radial Map</a>
-      <a href="#">Browse Roles</a>
-      <a href="#">Contact</a>
-    </nav>
-  </header>
-  <main id="radial-wrapper">
-    <div id="map-container" class="shrinked-chart">
-      <!--RADIAL_MAP-->
-    </div>
-  </main>
-  <footer>
-    &copy; 2025 HIM Pathways Project – All rights reserved.
-  </footer>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const plot = document.querySelector('.js-plotly-plot');
-      if (plot) {
-        plot.on('plotly_click', function (data) {
-          const url = data.points[0].customdata[0][1];
-          if (url) window.open(url, '_blank');
-        });
-      }
-    });
-  </script>
+  <!--DOT_CONTAINER-->
 </body>
 </html>

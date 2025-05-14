@@ -1,113 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>HIM Career Map</title>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+      background: url('images/healthfacility.jpg') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
     }
-    header {
-      background-color: #ffffff;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .logo {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #4f46e5;
-    }
-    nav {
-      display: flex;
-      gap: 1.2rem;
-    }
-    nav a {
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-    nav a:hover {
-      color: #4f46e5;
-    }
-    #radial-wrapper {
-      padding: 2rem 1rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-    }
-    .shrinked-chart {
-      width: 100%;
-      max-width: 1000px;
-      height: 700px;
-    }
-    footer {
-      background-color: #f1f1f1;
-      text-align: center;
-      padding: 1.5rem;
-      margin-top: 4rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-    .js-plotly-plot .scatterlayer .trace .points path {
-      transition: filter 0.3s ease, transform 0.3s ease;
-    }
-    .js-plotly-plot .scatterlayer .trace .points path:hover {
-      filter: drop-shadow(0 0 8px #6366f1);
-      transform: scale(1.2);
-      animation: pulse 1s infinite;
+    .dot {
+      position: absolute;
+      background-color: #4f46e5;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-size: 12px;
       cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.2s;
     }
-    @keyframes pulse {
-      0% { filter: drop-shadow(0 0 4px #6366f1); }
-      50% { filter: drop-shadow(0 0 12px #6366f1); }
-      100% { filter: drop-shadow(0 0 4px #6366f1); }
+    .dot:hover {
+      transform: scale(1.2);
+      background-color: #6366f1;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">HIM Career Map</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#map-container">Radial Map</a>
-      <a href="#">Browse Roles</a>
-      <a href="#">Contact</a>
-    </nav>
-  </header>
-  <main id="radial-wrapper">
-    <div id="map-container" class="shrinked-chart">
-      <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
-        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>                <div id="map-container" class="plotly-graph-div" style="height:950px; width:950px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("map-container")) {                    Plotly.newPlot(                        "map-container",                        [{"customdata":["Business Analyst||categories\u002fbusiness_analyst.html"],"hoverinfo":"text","hovertext":"Business Analyst (Total: 3)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":14},"mode":"markers","name":"","r":[1.5],"theta":[0.0],"type":"scatterpolar"},{"customdata":["Chief\u002fDeputy HIM||categories\u002fchiefdeputy_him.html"],"hoverinfo":"text","hovertext":"Chief\u002fDeputy HIM (Total: 3)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":14},"mode":"markers","name":"","r":[1.5],"theta":[8.78048780487805],"type":"scatterpolar"},{"customdata":["Clinical Documentation Specialist||categories\u002fclinical_documentation_specialist.html"],"hoverinfo":"text","hovertext":"Clinical Documentation Specialist (Total: 2)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":12},"mode":"markers","name":"","r":[1.5],"theta":[17.5609756097561],"type":"scatterpolar"},{"customdata":["Clinical Forms Manager||categories\u002fclinical_forms_manager.html"],"hoverinfo":"text","hovertext":"Clinical Forms Manager (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[26.34146341463415],"type":"scatterpolar"},{"customdata":["Clinical System Manager||categories\u002fclinical_system_manager.html"],"hoverinfo":"text","hovertext":"Clinical System Manager (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[35.1219512195122],"type":"scatterpolar"},{"customdata":["Company Director||categories\u002fcompany_director.html"],"hoverinfo":"text","hovertext":"Company Director (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[43.90243902439025],"type":"scatterpolar"},{"customdata":["Consultant||categories\u002fconsultant.html"],"hoverinfo":"text","hovertext":"Consultant (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[52.6829268292683],"type":"scatterpolar"},{"customdata":["Credential Trainer||categories\u002fcredential_trainer.html"],"hoverinfo":"text","hovertext":"Credential Trainer (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[61.463414634146346],"type":"scatterpolar"},{"customdata":["Data Analyst||categories\u002fdata_analyst.html"],"hoverinfo":"text","hovertext":"Data Analyst (Total: 3)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":14},"mode":"markers","name":"","r":[1.5],"theta":[70.2439024390244],"type":"scatterpolar"},{"customdata":["Data Assurance Officer||categories\u002fdata_assurance_officer.html"],"hoverinfo":"text","hovertext":"Data Assurance Officer (Total: 4)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":16},"mode":"markers","name":"","r":[1.5],"theta":[79.02439024390245],"type":"scatterpolar"},{"customdata":["Data Collection Officer||categories\u002fdata_collection_officer.html"],"hoverinfo":"text","hovertext":"Data Collection Officer (Total: 2)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":12},"mode":"markers","name":"","r":[1.5],"theta":[87.8048780487805],"type":"scatterpolar"},{"customdata":["Data Manager||categories\u002fdata_manager.html"],"hoverinfo":"text","hovertext":"Data Manager (Total: 8)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":24},"mode":"markers","name":"","r":[1.5],"theta":[96.58536585365854],"type":"scatterpolar"},{"customdata":["Data Training Officer||categories\u002fdata_training_officer.html"],"hoverinfo":"text","hovertext":"Data Training Officer (Total: 2)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":12},"mode":"markers","name":"","r":[1.5],"theta":[105.3658536585366],"type":"scatterpolar"},{"customdata":["Database Manager||categories\u002fdatabase_manager.html"],"hoverinfo":"text","hovertext":"Database Manager (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[114.14634146341464],"type":"scatterpolar"},{"customdata":["Digital Health and QI Officer||categories\u002fdigital_health_and_qi_officer.html"],"hoverinfo":"text","hovertext":"Digital Health and QI Officer (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[122.92682926829269],"type":"scatterpolar"},{"customdata":["EMR Analyst\u002fManager||categories\u002femr_analystmanager.html"],"hoverinfo":"text","hovertext":"EMR Analyst\u002fManager (Total: 6)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":20},"mode":"markers","name":"","r":[1.5],"theta":[131.70731707317074],"type":"scatterpolar"},{"customdata":["HIM Clinical Coder||categories\u002fhim_clinical_coder.html"],"hoverinfo":"text","hovertext":"HIM Clinical Coder (Total: 35)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":78},"mode":"markers","name":"","r":[1.5],"theta":[140.4878048780488],"type":"scatterpolar"},{"customdata":["HIM Data Reporter||categories\u002fhim_data_reporter.html"],"hoverinfo":"text","hovertext":"HIM Data Reporter (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[149.26829268292684],"type":"scatterpolar"},{"customdata":["HIM Health Data Reporter||categories\u002fhim_health_data_reporter.html"],"hoverinfo":"text","hovertext":"HIM Health Data Reporter (Total: 6)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":20},"mode":"markers","name":"","r":[1.5],"theta":[158.0487804878049],"type":"scatterpolar"},{"customdata":["HIM Supervisor\u002fTeam Leader||categories\u002fhim_supervisorteam_leader.html"],"hoverinfo":"text","hovertext":"HIM Supervisor\u002fTeam Leader (Total: 10)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":28},"mode":"markers","name":"","r":[1.5],"theta":[166.82926829268294],"type":"scatterpolar"},{"customdata":["HIS Project Officer||categories\u002fhis_project_officer.html"],"hoverinfo":"text","hovertext":"HIS Project Officer (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[175.609756097561],"type":"scatterpolar"},{"customdata":["Health Dataset Officer||categories\u002fhealth_dataset_officer.html"],"hoverinfo":"text","hovertext":"Health Dataset Officer (Total: 5)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":18},"mode":"markers","name":"","r":[1.5],"theta":[184.39024390243904],"type":"scatterpolar"},{"customdata":["Health Information Manager||categories\u002fhealth_information_manager.html"],"hoverinfo":"text","hovertext":"Health Information Manager (Total: 46)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":100},"mode":"markers","name":"","r":[1.5],"theta":[193.1707317073171],"type":"scatterpolar"},{"customdata":["Health Information Officer||categories\u002fhealth_information_officer.html"],"hoverinfo":"text","hovertext":"Health Information Officer (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[201.95121951219514],"type":"scatterpolar"},{"customdata":["Information Management Advisor||categories\u002finformation_management_advisor.html"],"hoverinfo":"text","hovertext":"Information Management Advisor (Total: 4)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":16},"mode":"markers","name":"","r":[1.5],"theta":[210.7317073170732],"type":"scatterpolar"},{"customdata":["Mental Health, Health Information Manager||categories\u002fmental_health_health_information_manager.html"],"hoverinfo":"text","hovertext":"Mental Health, Health Information Manager (Total: 3)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":14},"mode":"markers","name":"","r":[1.5],"theta":[219.51219512195124],"type":"scatterpolar"},{"customdata":["Metadata and Classification Analyst||categories\u002fmetadata_and_classification_analyst.html"],"hoverinfo":"text","hovertext":"Metadata and Classification Analyst (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[228.2926829268293],"type":"scatterpolar"},{"customdata":["Operations Manager||categories\u002foperations_manager.html"],"hoverinfo":"text","hovertext":"Operations Manager (Total: 4)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":16},"mode":"markers","name":"","r":[1.5],"theta":[237.07317073170734],"type":"scatterpolar"},{"customdata":["Patient Relationship Officer||categories\u002fpatient_relationship_officer.html"],"hoverinfo":"text","hovertext":"Patient Relationship Officer (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[245.85365853658539],"type":"scatterpolar"},{"customdata":["Planning Officer||categories\u002fplanning_officer.html"],"hoverinfo":"text","hovertext":"Planning Officer (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[254.63414634146343],"type":"scatterpolar"},{"customdata":["Product Analyst||categories\u002fproduct_analyst.html"],"hoverinfo":"text","hovertext":"Product Analyst (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[263.4146341463415],"type":"scatterpolar"},{"customdata":["Program and Data Support||categories\u002fprogram_and_data_support.html"],"hoverinfo":"text","hovertext":"Program and Data Support (Total: 3)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":14},"mode":"markers","name":"","r":[1.5],"theta":[272.19512195121956],"type":"scatterpolar"},{"customdata":["Project Manager||categories\u002fproject_manager.html"],"hoverinfo":"text","hovertext":"Project Manager (Total: 2)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":12},"mode":"markers","name":"","r":[1.5],"theta":[280.9756097560976],"type":"scatterpolar"},{"customdata":["Project Officer||categories\u002fproject_officer.html"],"hoverinfo":"text","hovertext":"Project Officer (Total: 5)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":18},"mode":"markers","name":"","r":[1.5],"theta":[289.7560975609756],"type":"scatterpolar"},{"customdata":["Research Officer||categories\u002fresearch_officer.html"],"hoverinfo":"text","hovertext":"Research Officer (Total: 5)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":18},"mode":"markers","name":"","r":[1.5],"theta":[298.5365853658537],"type":"scatterpolar"},{"customdata":["Senior Health Information Manager||categories\u002fsenior_health_information_manager.html"],"hoverinfo":"text","hovertext":"Senior Health Information Manager (Total: 2)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":12},"mode":"markers","name":"","r":[1.5],"theta":[307.31707317073176],"type":"scatterpolar"},{"customdata":["Sessional Tutor||categories\u002fsessional_tutor.html"],"hoverinfo":"text","hovertext":"Sessional Tutor (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[316.0975609756098],"type":"scatterpolar"},{"customdata":["Specialist Medical Coders||categories\u002fspecialist_medical_coders.html"],"hoverinfo":"text","hovertext":"Specialist Medical Coders (Total: 2)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":12},"mode":"markers","name":"","r":[1.5],"theta":[324.8780487804878],"type":"scatterpolar"},{"customdata":["Strategic Planning and Reporting Officer||categories\u002fstrategic_planning_and_reporting_officer.html"],"hoverinfo":"text","hovertext":"Strategic Planning and Reporting Officer (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[333.6585365853659],"type":"scatterpolar"},{"customdata":["System Analyst||categories\u002fsystem_analyst.html"],"hoverinfo":"text","hovertext":"System Analyst (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[342.43902439024396],"type":"scatterpolar"},{"customdata":["Training and Auditing Coordinator||categories\u002ftraining_and_auditing_coordinator.html"],"hoverinfo":"text","hovertext":"Training and Auditing Coordinator (Total: 1)","marker":{"color":"#636efa","line":{"color":"#000","width":1.2},"opacity":0.92,"size":10},"mode":"markers","name":"","r":[1.5],"theta":[351.219512195122],"type":"scatterpolar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"polar":{"radialaxis":{"visible":false,"range":[0,2]},"angularaxis":{"tickfont":{"size":11,"color":"#FFFFFF"},"visible":true,"tickvals":[0.0,8.78048780487805,17.5609756097561,26.34146341463415,35.1219512195122,43.90243902439025,52.6829268292683,61.463414634146346,70.2439024390244,79.02439024390245,87.8048780487805,96.58536585365854,105.3658536585366,114.14634146341464,122.92682926829269,131.70731707317074,140.4878048780488,149.26829268292684,158.0487804878049,166.82926829268294,175.609756097561,184.39024390243904,193.1707317073171,201.95121951219514,210.7317073170732,219.51219512195124,228.2926829268293,237.07317073170734,245.85365853658539,254.63414634146343,263.4146341463415,272.19512195121956,280.9756097560976,289.7560975609756,298.5365853658537,307.31707317073176,316.0975609756098,324.8780487804878,333.6585365853659,342.43902439024396,351.219512195122],"ticktext":["Business Analyst","Chief\u002fDeputy HIM","Clinical Documentation Specialist","Clinical Forms Manager","Clinical System Manager","Company Director","Consultant","Credential Trainer","Data Analyst","Data Assurance Officer","Data Collection Officer","Data Manager","Data Training Officer","Database Manager","Digital Health and QI Officer","EMR Analyst\u002fManager","HIM Clinical Coder","HIM Data Reporter","HIM Health Data Reporter","HIM Supervisor\u002fTeam Leader","HIS Project Officer","Health Dataset Officer","Health Information Manager","Health Information Officer","Information Management Advisor","Mental Health, Health Information Manager","Metadata and Classification Analyst","Operations Manager","Patient Relationship Officer","Planning Officer","Product Analyst","Program and Data Support","Project Manager","Project Officer","Research Officer","Senior Health Information Manager","Sessional Tutor","Specialist Medical Coders","Strategic Planning and Reporting Officer","System Analyst","Training and Auditing Coordinator"]},"bgcolor":"#000000"},"font":{"color":"#FFFFFF"},"title":{"text":"HIM Career Map"},"paper_bgcolor":"#000000","showlegend":false,"width":950,"height":950},                        {"responsive": true}                    )                };            </script>        </div>
-    </div>
-  </main>
-  <footer>
-    &copy; 2025 HIM Pathways Project – All rights reserved.
-  </footer>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const plot = document.querySelector('.js-plotly-plot');
-      if (plot) {
-        plot.on('plotly_click', function (data) {
-          const tag = data.points[0].customdata;
-          const link = tag.split("||")[1];
-          if (link) window.open(link, '_blank');
-        });
-      }
-    });
-  </script>
+  <div class="dot" style="left: 120px; top: 100px;" onclick="window.open('categories/health_information_manager.html', '_blank')" title="Health Information Manager">Health Information Manager</div>
+<div class="dot" style="left: 300px; top: 100px;" onclick="window.open('categories/him_clinical_coder.html', '_blank')" title="HIM Clinical Coder">HIM Clinical Coder</div>
+<div class="dot" style="left: 480px; top: 100px;" onclick="window.open('categories/research_officer.html', '_blank')" title="Research Officer">Research Officer</div>
+<div class="dot" style="left: 660px; top: 100px;" onclick="window.open('categories/clinical_documentation_specialist.html', '_blank')" title="Clinical Documentation Specialist">Clinical Documentation Specialist</div>
+<div class="dot" style="left: 840px; top: 100px;" onclick="window.open('categories/specialist_medical_coders.html', '_blank')" title="Specialist Medical Coders">Specialist Medical Coders</div>
+<div class="dot" style="left: 1020px; top: 100px;" onclick="window.open('categories/data_collection_officer.html', '_blank')" title="Data Collection Officer">Data Collection Officer</div>
+<div class="dot" style="left: 120px; top: 190px;" onclick="window.open('categories/him_health_data_reporter.html', '_blank')" title="HIM Health Data Reporter">HIM Health Data Reporter</div>
+<div class="dot" style="left: 300px; top: 190px;" onclick="window.open('categories/data_assurance_officer.html', '_blank')" title="Data Assurance Officer">Data Assurance Officer</div>
+<div class="dot" style="left: 480px; top: 190px;" onclick="window.open('categories/health_dataset_officer.html', '_blank')" title="Health Dataset Officer">Health Dataset Officer</div>
+<div class="dot" style="left: 660px; top: 190px;" onclick="window.open('categories/data_manager.html', '_blank')" title="Data Manager">Data Manager</div>
+<div class="dot" style="left: 840px; top: 190px;" onclick="window.open('categories/system_analyst.html', '_blank')" title="System Analyst">System Analyst</div>
+<div class="dot" style="left: 1020px; top: 190px;" onclick="window.open('categories/project_officer.html', '_blank')" title="Project Officer">Project Officer</div>
+<div class="dot" style="left: 120px; top: 280px;" onclick="window.open('categories/data_analyst.html', '_blank')" title="Data Analyst">Data Analyst</div>
+<div class="dot" style="left: 300px; top: 280px;" onclick="window.open('categories/emr_analystmanager.html', '_blank')" title="EMR Analyst/Manager">EMR Analyst/Manager</div>
+<div class="dot" style="left: 480px; top: 280px;" onclick="window.open('categories/information_management_advisor.html', '_blank')" title="Information Management Advisor">Information Management Advisor</div>
+<div class="dot" style="left: 660px; top: 280px;" onclick="window.open('categories/consultant.html', '_blank')" title="Consultant">Consultant</div>
+<div class="dot" style="left: 840px; top: 280px;" onclick="window.open('categories/metadata_and_classification_analyst.html', '_blank')" title="Metadata and Classification Analyst">Metadata and Classification Analyst</div>
+<div class="dot" style="left: 1020px; top: 280px;" onclick="window.open('categories/patient_relationship_officer.html', '_blank')" title="Patient Relationship Officer">Patient Relationship Officer</div>
+<div class="dot" style="left: 120px; top: 370px;" onclick="window.open('categories/program_and_data_support.html', '_blank')" title="Program and Data Support">Program and Data Support</div>
+<div class="dot" style="left: 300px; top: 370px;" onclick="window.open('categories/health_information_officer.html', '_blank')" title="Health Information Officer">Health Information Officer</div>
+<div class="dot" style="left: 480px; top: 370px;" onclick="window.open('categories/digital_health_and_qi_officer.html', '_blank')" title="Digital Health and QI Officer">Digital Health and QI Officer</div>
+<div class="dot" style="left: 660px; top: 370px;" onclick="window.open('categories/data_training_officer.html', '_blank')" title="Data Training Officer">Data Training Officer</div>
+<div class="dot" style="left: 840px; top: 370px;" onclick="window.open('categories/his_project_officer.html', '_blank')" title="HIS Project Officer">HIS Project Officer</div>
+<div class="dot" style="left: 1020px; top: 370px;" onclick="window.open('categories/clinical_forms_manager.html', '_blank')" title="Clinical Forms Manager">Clinical Forms Manager</div>
+<div class="dot" style="left: 120px; top: 460px;" onclick="window.open('categories/him_supervisorteam_leader.html', '_blank')" title="HIM Supervisor/Team Leader">HIM Supervisor/Team Leader</div>
+<div class="dot" style="left: 300px; top: 460px;" onclick="window.open('categories/operations_manager.html', '_blank')" title="Operations Manager">Operations Manager</div>
+<div class="dot" style="left: 480px; top: 460px;" onclick="window.open('categories/him_data_reporter.html', '_blank')" title="HIM Data Reporter">HIM Data Reporter</div>
+<div class="dot" style="left: 660px; top: 460px;" onclick="window.open('categories/mental_health_health_information_manager.html', '_blank')" title="Mental Health, Health Information Manager">Mental Health, Health Information Manager</div>
+<div class="dot" style="left: 840px; top: 460px;" onclick="window.open('categories/training_and_auditing_coordinator.html', '_blank')" title="Training and Auditing Coordinator">Training and Auditing Coordinator</div>
+<div class="dot" style="left: 1020px; top: 460px;" onclick="window.open('categories/senior_health_information_manager.html', '_blank')" title="Senior Health Information Manager">Senior Health Information Manager</div>
+<div class="dot" style="left: 120px; top: 550px;" onclick="window.open('categories/sessional_tutor.html', '_blank')" title="Sessional Tutor">Sessional Tutor</div>
+<div class="dot" style="left: 300px; top: 550px;" onclick="window.open('categories/database_manager.html', '_blank')" title="Database Manager">Database Manager</div>
+<div class="dot" style="left: 480px; top: 550px;" onclick="window.open('categories/chiefdeputy_him.html', '_blank')" title="Chief/Deputy HIM">Chief/Deputy HIM</div>
+<div class="dot" style="left: 660px; top: 550px;" onclick="window.open('categories/product_analyst.html', '_blank')" title="Product Analyst">Product Analyst</div>
+<div class="dot" style="left: 840px; top: 550px;" onclick="window.open('categories/business_analyst.html', '_blank')" title="Business Analyst">Business Analyst</div>
+<div class="dot" style="left: 1020px; top: 550px;" onclick="window.open('categories/clinical_system_manager.html', '_blank')" title="Clinical System Manager">Clinical System Manager</div>
+<div class="dot" style="left: 120px; top: 640px;" onclick="window.open('categories/credential_trainer.html', '_blank')" title="Credential Trainer">Credential Trainer</div>
+<div class="dot" style="left: 300px; top: 640px;" onclick="window.open('categories/company_director.html', '_blank')" title="Company Director">Company Director</div>
+<div class="dot" style="left: 480px; top: 640px;" onclick="window.open('categories/project_manager.html', '_blank')" title="Project Manager">Project Manager</div>
+<div class="dot" style="left: 660px; top: 640px;" onclick="window.open('categories/planning_officer.html', '_blank')" title="Planning Officer">Planning Officer</div>
+<div class="dot" style="left: 840px; top: 640px;" onclick="window.open('categories/strategic_planning_and_reporting_officer.html', '_blank')" title="Strategic Planning and Reporting Officer">Strategic Planning and Reporting Officer</div>
+
 </body>
 </html>
