@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HIM Career Map</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: auto;
+    }
+    #viewport {
+      width: 100%;
+      height: 100%;
+      overflow: scroll;
+    }
+    #zoom-layer {
+      width: 2000px;
+      height: 1500px;
+      background: url('images/healthfacility.jpg') no-repeat center center;
+      background-size: cover;
+      position: relative;
+      transform-origin: 0 0;
+    }
+    .dot {
+      position: absolute;
+      background-color: #000000;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255,255,255,0.3);
+      cursor: pointer;
+      white-space: nowrap;
+      border: 2px solid white;
+      animation: fadeBlink 3s ease-in-out infinite;
+      transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .dot:hover {
+      transform: scale(1.3) rotate(-2deg);
+      background-color: #ff3b3b;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+    .dot::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity 0.3s;
+    }
+    .dot:hover::after {
+      opacity: 1;
+    }
+    @keyframes fadeBlink {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="viewport">
+    <div id="zoom-layer">
+      <div class="dot" style="left: 1226px; top: 610px;" title="Business Analyst | Health Informatics | Early Career" onclick="window.open('categories/business_analyst.html', '_blank')">Business Analyst</div>
+<div class="dot" style="left: 1559px; top: 799px;" title="Chief/Deputy HIM | Health Information Management | Early Career" onclick="window.open('categories/chiefdeputy_him.html', '_blank')">Chief/Deputy HIM</div>
+<div class="dot" style="left: 960px; top: 1075px;" title="Clinical Documentation Specialist | Health Classification, Health Information Management | Early Career, Established Career" onclick="window.open('categories/clinical_documentation_specialist.html', '_blank')">Clinical Documentation Specialist</div>
+<div class="dot" style="left: 1394px; top: 289px;" title="Clinical Forms Manager | Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/clinical_forms_manager.html', '_blank')">Clinical Forms Manager</div>
+<div class="dot" style="left: 1230px; top: 1057px;" title="Clinical System Manager | Health Informatics | Early Career" onclick="window.open('categories/clinical_system_manager.html', '_blank')">Clinical System Manager</div>
+<div class="dot" style="left: 1195px; top: 786px;" title="Company Director | Health Information Management | Established Career" onclick="window.open('categories/company_director.html', '_blank')">Company Director</div>
+<div class="dot" style="left: 1824px; top: 1057px;" title="Consultant | Health Informatics | Early Career" onclick="window.open('categories/consultant.html', '_blank')">Consultant</div>
+<div class="dot" style="left: 1144px; top: 662px;" title="Credential Trainer | Health Informatics | Early Career" onclick="window.open('categories/credential_trainer.html', '_blank')">Credential Trainer</div>
+<div class="dot" style="left: 1738px; top: 1367px;" title="Data Analyst | Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/data_analyst.html', '_blank')">Data Analyst</div>
+<div class="dot" style="left: 221px; top: 931px;" title="Data Assurance Officer | Health Data Analysis | Early Career, Established Career" onclick="window.open('categories/data_assurance_officer.html', '_blank')">Data Assurance Officer</div>
+<div class="dot" style="left: 566px; top: 1254px;" title="Data Collection Officer | Health Data Analysis, Health Informatics | Early Career, Established Career" onclick="window.open('categories/data_collection_officer.html', '_blank')">Data Collection Officer</div>
+<div class="dot" style="left: 1338px; top: 746px;" title="Data Manager | Health Data Analysis, Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/data_manager.html', '_blank')">Data Manager</div>
+<div class="dot" style="left: 430px; top: 120px;" title="Data Training Officer | Health Data Analysis, Health Informatics | Early Career" onclick="window.open('categories/data_training_officer.html', '_blank')">Data Training Officer</div>
+<div class="dot" style="left: 1582px; top: 940px;" title="Database Manager | Health Information Management | Early Career" onclick="window.open('categories/database_manager.html', '_blank')">Database Manager</div>
+<div class="dot" style="left: 187px; top: 266px;" title="Digital Health and QI Officer | Health Informatics | Early Career" onclick="window.open('categories/digital_health_and_qi_officer.html', '_blank')">Digital Health and QI Officer</div>
+<div class="dot" style="left: 1496px; top: 1397px;" title="EMR Analyst/Manager | Health Informatics | Early Career, Established Career" onclick="window.open('categories/emr_analystmanager.html', '_blank')">EMR Analyst/Manager</div>
+<div class="dot" style="left: 1223px; top: 487px;" title="HIM Clinical Coder | Health Classification, Health Data Analysis, Health Informatics, Health Information Management | Early Career, Established Career" onclick="window.open('categories/him_clinical_coder.html', '_blank')">HIM Clinical Coder</div>
+<div class="dot" style="left: 971px; top: 700px;" title="HIM Data Reporter | Health Information Management | Early Career" onclick="window.open('categories/him_data_reporter.html', '_blank')">HIM Data Reporter</div>
+<div class="dot" style="left: 1787px; top: 415px;" title="HIM Health Data Reporter | Health Data Analysis, Health Information Management | Early Career" onclick="window.open('categories/him_health_data_reporter.html', '_blank')">HIM Health Data Reporter</div>
+<div class="dot" style="left: 230px; top: 113px;" title="HIM Supervisor/Team Leader | Health Information Management | Early Career, Established Career" onclick="window.open('categories/him_supervisorteam_leader.html', '_blank')">HIM Supervisor/Team Leader</div>
+<div class="dot" style="left: 1785px; top: 341px;" title="HIS Project Officer | Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/his_project_officer.html', '_blank')">HIS Project Officer</div>
+<div class="dot" style="left: 1432px; top: 876px;" title="Health Dataset Officer | Health Data Analysis, Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/health_dataset_officer.html', '_blank')">Health Dataset Officer</div>
+<div class="dot" style="left: 869px; top: 664px;" title="Health Information Manager | Health Classification, Health Data Analysis, Health Informatics, Health Information Management | Early Career, Established Career" onclick="window.open('categories/health_information_manager.html', '_blank')">Health Information Manager</div>
+<div class="dot" style="left: 443px; top: 997px;" title="Health Information Officer | Health Informatics | Early Career" onclick="window.open('categories/health_information_officer.html', '_blank')">Health Information Officer</div>
+<div class="dot" style="left: 1615px; top: 191px;" title="Information Management Advisor | Health Informatics, Health Information Management | Early Career, Established Career" onclick="window.open('categories/information_management_advisor.html', '_blank')">Information Management Advisor</div>
+<div class="dot" style="left: 1537px; top: 1055px;" title="Mental Health, Health Information Manager | Health Data Analysis, Health Information Management | Early Career, Established Career" onclick="window.open('categories/mental_health_health_information_manager.html', '_blank')">Mental Health, Health Information Manager</div>
+<div class="dot" style="left: 905px; top: 608px;" title="Metadata and Classification Analyst | Health Informatics | Early Career" onclick="window.open('categories/metadata_and_classification_analyst.html', '_blank')">Metadata and Classification Analyst</div>
+<div class="dot" style="left: 485px; top: 875px;" title="Operations Manager | Health Information Management | Early Career, Established Career" onclick="window.open('categories/operations_manager.html', '_blank')">Operations Manager</div>
+<div class="dot" style="left: 1315px; top: 134px;" title="Patient Relationship Officer | Health Informatics | Early Career" onclick="window.open('categories/patient_relationship_officer.html', '_blank')">Patient Relationship Officer</div>
+<div class="dot" style="left: 1055px; top: 305px;" title="Planning Officer | Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/planning_officer.html', '_blank')">Planning Officer</div>
+<div class="dot" style="left: 376px; top: 1204px;" title="Product Analyst | Health Informatics | Early Career" onclick="window.open('categories/product_analyst.html', '_blank')">Product Analyst</div>
+<div class="dot" style="left: 1284px; top: 1125px;" title="Program and Data Support | Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/program_and_data_support.html', '_blank')">Program and Data Support</div>
+<div class="dot" style="left: 559px; top: 1121px;" title="Project Manager | Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/project_manager.html', '_blank')">Project Manager</div>
+<div class="dot" style="left: 1437px; top: 665px;" title="Project Officer | Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/project_officer.html', '_blank')">Project Officer</div>
+<div class="dot" style="left: 121px; top: 1229px;" title="Research Officer | Health Classification, Health Data Analysis, Health Informatics | Early Career" onclick="window.open('categories/research_officer.html', '_blank')">Research Officer</div>
+<div class="dot" style="left: 352px; top: 802px;" title="Senior Health Information Manager | Health Classification, Health Informatics, Health Information Management | Early Career" onclick="window.open('categories/senior_health_information_manager.html', '_blank')">Senior Health Information Manager</div>
+<div class="dot" style="left: 847px; top: 501px;" title="Sessional Tutor | Health Information Management | Early Career" onclick="window.open('categories/sessional_tutor.html', '_blank')">Sessional Tutor</div>
+<div class="dot" style="left: 956px; top: 829px;" title="Specialist Medical Coders | Health Classification, Health Data Analysis, Health Informatics | Early Career, Established Career" onclick="window.open('categories/specialist_medical_coders.html', '_blank')">Specialist Medical Coders</div>
+<div class="dot" style="left: 1684px; top: 261px;" title="Strategic Planning and Reporting Officer | Health Informatics | Early Career" onclick="window.open('categories/strategic_planning_and_reporting_officer.html', '_blank')">Strategic Planning and Reporting Officer</div>
+<div class="dot" style="left: 574px; top: 301px;" title="System Analyst | Health Informatics | Early Career" onclick="window.open('categories/system_analyst.html', '_blank')">System Analyst</div>
+<div class="dot" style="left: 1182px; top: 1095px;" title="Training and Auditing Coordinator | Health Information Management | Early Career" onclick="window.open('categories/training_and_auditing_coordinator.html', '_blank')">Training and Auditing Coordinator</div>
+
+    </div>
+  </div>
+  <script>
+    let zoom = 1;
+    document.addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        zoom += e.deltaY * -0.001;
+        zoom = Math.min(Math.max(.5, zoom), 2);
+        document.getElementById('zoom-layer').style.transform = `scale(${zoom})`;
+      }
+    }, { passive: false });
+  </script>
+</body>
+</html>
