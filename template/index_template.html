@@ -11,7 +11,6 @@
       font-family: 'Inter', sans-serif;
       background-color: #f9f9f9;
     }
-
     header {
       background-color: #ffffff;
       padding: 1rem 2rem;
@@ -23,29 +22,24 @@
       top: 0;
       z-index: 10;
     }
-
     .logo {
       font-size: 1.4rem;
       font-weight: 700;
       color: #4f46e5;
     }
-
     nav {
       display: flex;
       gap: 1.2rem;
     }
-
     nav a {
       text-decoration: none;
       color: #333;
       font-weight: 500;
       transition: color 0.3s ease;
     }
-
     nav a:hover {
       color: #4f46e5;
     }
-
     #radial-wrapper {
       padding: 2rem 1rem;
       max-width: 1200px;
@@ -55,34 +49,11 @@
       align-items: center;
       gap: 2rem;
     }
-
-    .banner-img {
-      width: 100%;
-      max-width: 800px;
-      border-radius: 16px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
-      object-fit: contain;
-    }
-
     .shrinked-chart {
       width: 100%;
-      max-width: 900px;
-      height: 600px;
+      max-width: 1000px;
+      height: 700px;
     }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-
-    .filters select {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-    }
-
     footer {
       background-color: #f1f1f1;
       text-align: center;
@@ -91,18 +62,15 @@
       font-size: 0.9rem;
       color: #666;
     }
-
     .js-plotly-plot .scatterlayer .trace .points path {
       transition: filter 0.3s ease, transform 0.3s ease;
     }
-
     .js-plotly-plot .scatterlayer .trace .points path:hover {
       filter: drop-shadow(0 0 8px #6366f1);
       transform: scale(1.2);
       animation: pulse 1s infinite;
       cursor: pointer;
     }
-
     @keyframes pulse {
       0% { filter: drop-shadow(0 0 4px #6366f1); }
       50% { filter: drop-shadow(0 0 12px #6366f1); }
@@ -116,100 +84,28 @@
     <nav>
       <a href="#">Home</a>
       <a href="#map-container">Radial Map</a>
-      <a href="categories/data_analyst.html">Browse Roles</a>
-      <a href="#">Pathway</a>
+      <a href="#">Browse Roles</a>
+      <a href="#">Contact</a>
     </nav>
   </header>
-
   <main id="radial-wrapper">
-    <img src="images/healthfacility.jpg" alt="Health Facility" class="banner-img" />
-
-    <!-- Filter Controls -->
-    <div class="filters">
-      <select id="career-filter">
-        <option value="All">All Career Levels</option>
-        <option value="Early Career">Early Career</option>
-        <option value="Established Career">Established Career</option>
-      </select>
-      <select id="domain-filter">
-        <option value="All">All Domains</option>
-        <option value="Health Classification">Health Classification</option>
-        <option value="Health Information Management">Health Information Management</option>
-        <option value="Health Informatics">Health Informatics</option>
-        <option value="Health Data Analysis">Health Data Analysis</option>
-      </select>
-      <select id="category-filter">
-        <option value="All">All Categories</option>
-      </select>
-    </div>
-
-    <!-- Radial Map Container -->
     <div id="map-container" class="shrinked-chart">
       <!--RADIAL_MAP-->
     </div>
-
-    <img src="images/healthworkers.jpg" alt="Health Workers" class="banner-img" />
   </main>
-
   <footer>
     &copy; 2025 HIM Pathways Project – All rights reserved.
   </footer>
-
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const plot = document.querySelector('.js-plotly-plot');
-
-      if (!plot) return;
-
-      // Populate category filter
-      const categories = new Set();
-      plot.data.forEach(trace => {
-        const custom = trace.customdata?.[0];
-        if (custom) {
-          const [domain, category, level] = custom.split("||");
-          categories.add(category);
-        }
-      });
-
-      const categorySelect = document.getElementById('category-filter');
-      [...categories].sort().forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        categorySelect.appendChild(option);
-      });
-
-      // Filter function
-      function applyFilters() {
-        const selectedCareer = document.getElementById('career-filter').value;
-        const selectedDomain = document.getElementById('domain-filter').value;
-        const selectedCategory = document.getElementById('category-filter').value;
-
-        const visibility = plot.data.map(trace => {
-          const custom = trace.customdata?.[0];
-          if (!custom) return false;
-          const [domain, category, level] = custom.split("||");
-          return (selectedCareer === 'All' || level === selectedCareer)
-              && (selectedDomain === 'All' || domain === selectedDomain)
-              && (selectedCategory === 'All' || category === selectedCategory);
+      if (plot) {
+        plot.on('plotly_click', function (data) {
+          const point = data.points[0];
+          const url = point.customdata[0][1];
+          if (url) window.open(url, '_blank');
         });
-
-        Plotly.update(plot, { visible: visibility });
       }
-
-      // Attach filters
-      ['career-filter', 'domain-filter', 'category-filter'].forEach(id => {
-        document.getElementById(id).addEventListener('change', applyFilters);
-      });
-
-      // Click navigation
-      plot.on('plotly_click', function (data) {
-        const custom = data.points[0]?.customdata;
-        if (custom) {
-          const link = custom.split("||")[3];
-          if (link) window.open(link, '_blank');
-        }
-      });
     });
   </script>
 </body>
