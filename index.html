@@ -4,12 +4,22 @@
   <meta charset="UTF-8">
   <title>HIM Career Map</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      overflow: auto;
+      height: 100%;
+      width: 100%;
+    }
+    body {
       font-family: Arial, sans-serif;
-      background: url('images/healthfacility.jpg') no-repeat center center fixed;
+      background: url('images/healthfacility.jpg') no-repeat center center;
       background-size: cover;
-      overflow: hidden;
+    }
+    .map-container {
+      position: relative;
+      width: 2000px;
+      height: 1500px;
     }
     .dot {
       position: absolute;
@@ -29,47 +39,49 @@
   </style>
 </head>
 <body>
-  <div class="dot" style="left: 120px; top: 100px;" onclick="window.open('categories/health_information_manager.html', '_blank')" title="Health Information Manager">Health Information Manager</div>
-<div class="dot" style="left: 300px; top: 100px;" onclick="window.open('categories/him_clinical_coder.html', '_blank')" title="HIM Clinical Coder">HIM Clinical Coder</div>
-<div class="dot" style="left: 480px; top: 100px;" onclick="window.open('categories/research_officer.html', '_blank')" title="Research Officer">Research Officer</div>
-<div class="dot" style="left: 660px; top: 100px;" onclick="window.open('categories/clinical_documentation_specialist.html', '_blank')" title="Clinical Documentation Specialist">Clinical Documentation Specialist</div>
-<div class="dot" style="left: 840px; top: 100px;" onclick="window.open('categories/specialist_medical_coders.html', '_blank')" title="Specialist Medical Coders">Specialist Medical Coders</div>
-<div class="dot" style="left: 1020px; top: 100px;" onclick="window.open('categories/data_collection_officer.html', '_blank')" title="Data Collection Officer">Data Collection Officer</div>
-<div class="dot" style="left: 120px; top: 190px;" onclick="window.open('categories/him_health_data_reporter.html', '_blank')" title="HIM Health Data Reporter">HIM Health Data Reporter</div>
-<div class="dot" style="left: 300px; top: 190px;" onclick="window.open('categories/data_assurance_officer.html', '_blank')" title="Data Assurance Officer">Data Assurance Officer</div>
-<div class="dot" style="left: 480px; top: 190px;" onclick="window.open('categories/health_dataset_officer.html', '_blank')" title="Health Dataset Officer">Health Dataset Officer</div>
-<div class="dot" style="left: 660px; top: 190px;" onclick="window.open('categories/data_manager.html', '_blank')" title="Data Manager">Data Manager</div>
-<div class="dot" style="left: 840px; top: 190px;" onclick="window.open('categories/system_analyst.html', '_blank')" title="System Analyst">System Analyst</div>
-<div class="dot" style="left: 1020px; top: 190px;" onclick="window.open('categories/project_officer.html', '_blank')" title="Project Officer">Project Officer</div>
-<div class="dot" style="left: 120px; top: 280px;" onclick="window.open('categories/data_analyst.html', '_blank')" title="Data Analyst">Data Analyst</div>
-<div class="dot" style="left: 300px; top: 280px;" onclick="window.open('categories/emr_analystmanager.html', '_blank')" title="EMR Analyst/Manager">EMR Analyst/Manager</div>
-<div class="dot" style="left: 480px; top: 280px;" onclick="window.open('categories/information_management_advisor.html', '_blank')" title="Information Management Advisor">Information Management Advisor</div>
-<div class="dot" style="left: 660px; top: 280px;" onclick="window.open('categories/consultant.html', '_blank')" title="Consultant">Consultant</div>
-<div class="dot" style="left: 840px; top: 280px;" onclick="window.open('categories/metadata_and_classification_analyst.html', '_blank')" title="Metadata and Classification Analyst">Metadata and Classification Analyst</div>
-<div class="dot" style="left: 1020px; top: 280px;" onclick="window.open('categories/patient_relationship_officer.html', '_blank')" title="Patient Relationship Officer">Patient Relationship Officer</div>
-<div class="dot" style="left: 120px; top: 370px;" onclick="window.open('categories/program_and_data_support.html', '_blank')" title="Program and Data Support">Program and Data Support</div>
-<div class="dot" style="left: 300px; top: 370px;" onclick="window.open('categories/health_information_officer.html', '_blank')" title="Health Information Officer">Health Information Officer</div>
-<div class="dot" style="left: 480px; top: 370px;" onclick="window.open('categories/digital_health_and_qi_officer.html', '_blank')" title="Digital Health and QI Officer">Digital Health and QI Officer</div>
-<div class="dot" style="left: 660px; top: 370px;" onclick="window.open('categories/data_training_officer.html', '_blank')" title="Data Training Officer">Data Training Officer</div>
-<div class="dot" style="left: 840px; top: 370px;" onclick="window.open('categories/his_project_officer.html', '_blank')" title="HIS Project Officer">HIS Project Officer</div>
-<div class="dot" style="left: 1020px; top: 370px;" onclick="window.open('categories/clinical_forms_manager.html', '_blank')" title="Clinical Forms Manager">Clinical Forms Manager</div>
-<div class="dot" style="left: 120px; top: 460px;" onclick="window.open('categories/him_supervisorteam_leader.html', '_blank')" title="HIM Supervisor/Team Leader">HIM Supervisor/Team Leader</div>
-<div class="dot" style="left: 300px; top: 460px;" onclick="window.open('categories/operations_manager.html', '_blank')" title="Operations Manager">Operations Manager</div>
-<div class="dot" style="left: 480px; top: 460px;" onclick="window.open('categories/him_data_reporter.html', '_blank')" title="HIM Data Reporter">HIM Data Reporter</div>
-<div class="dot" style="left: 660px; top: 460px;" onclick="window.open('categories/mental_health_health_information_manager.html', '_blank')" title="Mental Health, Health Information Manager">Mental Health, Health Information Manager</div>
-<div class="dot" style="left: 840px; top: 460px;" onclick="window.open('categories/training_and_auditing_coordinator.html', '_blank')" title="Training and Auditing Coordinator">Training and Auditing Coordinator</div>
-<div class="dot" style="left: 1020px; top: 460px;" onclick="window.open('categories/senior_health_information_manager.html', '_blank')" title="Senior Health Information Manager">Senior Health Information Manager</div>
-<div class="dot" style="left: 120px; top: 550px;" onclick="window.open('categories/sessional_tutor.html', '_blank')" title="Sessional Tutor">Sessional Tutor</div>
-<div class="dot" style="left: 300px; top: 550px;" onclick="window.open('categories/database_manager.html', '_blank')" title="Database Manager">Database Manager</div>
-<div class="dot" style="left: 480px; top: 550px;" onclick="window.open('categories/chiefdeputy_him.html', '_blank')" title="Chief/Deputy HIM">Chief/Deputy HIM</div>
-<div class="dot" style="left: 660px; top: 550px;" onclick="window.open('categories/product_analyst.html', '_blank')" title="Product Analyst">Product Analyst</div>
-<div class="dot" style="left: 840px; top: 550px;" onclick="window.open('categories/business_analyst.html', '_blank')" title="Business Analyst">Business Analyst</div>
-<div class="dot" style="left: 1020px; top: 550px;" onclick="window.open('categories/clinical_system_manager.html', '_blank')" title="Clinical System Manager">Clinical System Manager</div>
-<div class="dot" style="left: 120px; top: 640px;" onclick="window.open('categories/credential_trainer.html', '_blank')" title="Credential Trainer">Credential Trainer</div>
-<div class="dot" style="left: 300px; top: 640px;" onclick="window.open('categories/company_director.html', '_blank')" title="Company Director">Company Director</div>
-<div class="dot" style="left: 480px; top: 640px;" onclick="window.open('categories/project_manager.html', '_blank')" title="Project Manager">Project Manager</div>
-<div class="dot" style="left: 660px; top: 640px;" onclick="window.open('categories/planning_officer.html', '_blank')" title="Planning Officer">Planning Officer</div>
-<div class="dot" style="left: 840px; top: 640px;" onclick="window.open('categories/strategic_planning_and_reporting_officer.html', '_blank')" title="Strategic Planning and Reporting Officer">Strategic Planning and Reporting Officer</div>
+  <div class="map-container">
+    <div class="dot" style="left: 1226px; top: 960px;" onclick="window.open('categories/health_information_manager.html', '_blank')" title="Health Information Manager">Health Information Manager</div>
+<div class="dot" style="left: 1394px; top: 1230px;" onclick="window.open('categories/him_clinical_coder.html', '_blank')" title="HIM Clinical Coder">HIM Clinical Coder</div>
+<div class="dot" style="left: 1195px; top: 1144px;" onclick="window.open('categories/research_officer.html', '_blank')" title="Research Officer">Research Officer</div>
+<div class="dot" style="left: 1738px; top: 221px;" onclick="window.open('categories/clinical_documentation_specialist.html', '_blank')" title="Clinical Documentation Specialist">Clinical Documentation Specialist</div>
+<div class="dot" style="left: 566px; top: 1338px;" onclick="window.open('categories/specialist_medical_coders.html', '_blank')" title="Specialist Medical Coders">Specialist Medical Coders</div>
+<div class="dot" style="left: 430px; top: 187px;" onclick="window.open('categories/data_collection_officer.html', '_blank')" title="Data Collection Officer">Data Collection Officer</div>
+<div class="dot" style="left: 1496px; top: 1223px;" onclick="window.open('categories/him_health_data_reporter.html', '_blank')" title="HIM Health Data Reporter">HIM Health Data Reporter</div>
+<div class="dot" style="left: 971px; top: 230px;" onclick="window.open('categories/data_assurance_officer.html', '_blank')" title="Data Assurance Officer">Data Assurance Officer</div>
+<div class="dot" style="left: 1785px; top: 869px;" onclick="window.open('categories/health_dataset_officer.html', '_blank')" title="Health Dataset Officer">Health Dataset Officer</div>
+<div class="dot" style="left: 443px; top: 905px;" onclick="window.open('categories/data_manager.html', '_blank')" title="Data Manager">Data Manager</div>
+<div class="dot" style="left: 485px; top: 1315px;" onclick="window.open('categories/system_analyst.html', '_blank')" title="System Analyst">System Analyst</div>
+<div class="dot" style="left: 1055px; top: 376px;" onclick="window.open('categories/project_officer.html', '_blank')" title="Project Officer">Project Officer</div>
+<div class="dot" style="left: 1284px; top: 559px;" onclick="window.open('categories/data_analyst.html', '_blank')" title="Data Analyst">Data Analyst</div>
+<div class="dot" style="left: 1437px; top: 121px;" onclick="window.open('categories/emr_analystmanager.html', '_blank')" title="EMR Analyst/Manager">EMR Analyst/Manager</div>
+<div class="dot" style="left: 352px; top: 847px;" onclick="window.open('categories/information_management_advisor.html', '_blank')" title="Information Management Advisor">Information Management Advisor</div>
+<div class="dot" style="left: 956px; top: 574px;" onclick="window.open('categories/consultant.html', '_blank')" title="Consultant">Consultant</div>
+<div class="dot" style="left: 1182px; top: 610px;" onclick="window.open('categories/metadata_and_classification_analyst.html', '_blank')" title="Metadata and Classification Analyst">Metadata and Classification Analyst</div>
+<div class="dot" style="left: 1599px; top: 799px;" onclick="window.open('categories/patient_relationship_officer.html', '_blank')" title="Patient Relationship Officer">Patient Relationship Officer</div>
+<div class="dot" style="left: 1075px; top: 289px;" onclick="window.open('categories/program_and_data_support.html', '_blank')" title="Program and Data Support">Program and Data Support</div>
+<div class="dot" style="left: 1057px; top: 786px;" onclick="window.open('categories/health_information_officer.html', '_blank')" title="Health Information Officer">Health Information Officer</div>
+<div class="dot" style="left: 1057px; top: 662px;" onclick="window.open('categories/digital_health_and_qi_officer.html', '_blank')" title="Digital Health and QI Officer">Digital Health and QI Officer</div>
+<div class="dot" style="left: 1690px; top: 1367px;" onclick="window.open('categories/data_training_officer.html', '_blank')" title="Data Training Officer">Data Training Officer</div>
+<div class="dot" style="left: 931px; top: 1254px;" onclick="window.open('categories/his_project_officer.html', '_blank')" title="HIS Project Officer">HIS Project Officer</div>
+<div class="dot" style="left: 1608px; top: 746px;" onclick="window.open('categories/clinical_forms_manager.html', '_blank')" title="Clinical Forms Manager">Clinical Forms Manager</div>
+<div class="dot" style="left: 120px; top: 940px;" onclick="window.open('categories/him_supervisorteam_leader.html', '_blank')" title="HIM Supervisor/Team Leader">HIM Supervisor/Team Leader</div>
+<div class="dot" style="left: 266px; top: 1397px;" onclick="window.open('categories/operations_manager.html', '_blank')" title="Operations Manager">Operations Manager</div>
+<div class="dot" style="left: 487px; top: 700px;" onclick="window.open('categories/him_data_reporter.html', '_blank')" title="HIM Data Reporter">HIM Data Reporter</div>
+<div class="dot" style="left: 415px; top: 113px;" onclick="window.open('categories/mental_health_health_information_manager.html', '_blank')" title="Mental Health, Health Information Manager">Mental Health, Health Information Manager</div>
+<div class="dot" style="left: 341px; top: 876px;" onclick="window.open('categories/training_and_auditing_coordinator.html', '_blank')" title="Training and Auditing Coordinator">Training and Auditing Coordinator</div>
+<div class="dot" style="left: 1469px; top: 664px;" onclick="window.open('categories/senior_health_information_manager.html', '_blank')" title="Senior Health Information Manager">Senior Health Information Manager</div>
+<div class="dot" style="left: 997px; top: 191px;" onclick="window.open('categories/sessional_tutor.html', '_blank')" title="Sessional Tutor">Sessional Tutor</div>
+<div class="dot" style="left: 1490px; top: 1055px;" onclick="window.open('categories/database_manager.html', '_blank')" title="Database Manager">Database Manager</div>
+<div class="dot" style="left: 1578px; top: 608px;" onclick="window.open('categories/chiefdeputy_him.html', '_blank')" title="Chief/Deputy HIM">Chief/Deputy HIM</div>
+<div class="dot" style="left: 875px; top: 134px;" onclick="window.open('categories/product_analyst.html', '_blank')" title="Product Analyst">Product Analyst</div>
+<div class="dot" style="left: 305px; top: 1204px;" onclick="window.open('categories/business_analyst.html', '_blank')" title="Business Analyst">Business Analyst</div>
+<div class="dot" style="left: 1685px; top: 1125px;" onclick="window.open('categories/clinical_system_manager.html', '_blank')" title="Clinical System Manager">Clinical System Manager</div>
+<div class="dot" style="left: 1121px; top: 665px;" onclick="window.open('categories/credential_trainer.html', '_blank')" title="Credential Trainer">Credential Trainer</div>
+<div class="dot" style="left: 1229px; top: 802px;" onclick="window.open('categories/company_director.html', '_blank')" title="Company Director">Company Director</div>
+<div class="dot" style="left: 501px; top: 829px;" onclick="window.open('categories/project_manager.html', '_blank')" title="Project Manager">Project Manager</div>
+<div class="dot" style="left: 1679px; top: 261px;" onclick="window.open('categories/planning_officer.html', '_blank')" title="Planning Officer">Planning Officer</div>
+<div class="dot" style="left: 301px; top: 1095px;" onclick="window.open('categories/strategic_planning_and_reporting_officer.html', '_blank')" title="Strategic Planning and Reporting Officer">Strategic Planning and Reporting Officer</div>
 
+  </div>
 </body>
 </html>
