@@ -3,12 +3,14 @@ import plotly.graph_objects as go
 import numpy as np
 import re
 import os
+import hashlib
+from pathlib import Path
 
 # Load data
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
 df = df[df["Career_Level"] != "Advanced Career"]
 
-# Normalize position category names
+# Normalize category names for linking
 def normalize_name(name):
     name = str(name).lower().strip()
     name = re.sub(r'\s+', ' ', name)
@@ -17,56 +19,51 @@ def normalize_name(name):
 
 df["Normalized_Category"] = df["Position_Category"].apply(normalize_name)
 
-# Assign fixed angle for each unique Position_Category
-unique_cats = sorted(df["Position_Category"].unique())
-angle_step = 360 / len(unique_cats)
-cat_angle_map = {cat: i * angle_step for i, cat in enumerate(unique_cats)}
-
-df["Theta"] = df["Position_Category"].map(cat_angle_map)
-df["Radius"] = 1.5  # All categories in same radial distance
-
-# Frequency aggregation
+# Aggregate frequencies per category
 agg = df.groupby("Position_Category").agg(
     Frequency=("ID_No", "nunique")
 ).reset_index()
 agg["Normalized_Category"] = agg["Position_Category"].apply(normalize_name)
-agg["Theta"] = agg["Position_Category"].map(cat_angle_map)
-agg["Radius"] = 1.5
 
-# Plotting
+# Random spread for radial visual
+np.random.seed(42)
+agg["Theta"] = np.random.uniform(0, 360, len(agg))
+agg["Radius"] = np.random.uniform(1.2, 2.2, len(agg))
+
+# Unique color per category
+def generate_color(name):
+    hex_color = "#" + hashlib.md5(name.encode()).hexdigest()[:6]
+    return hex_color
+
+agg["Color"] = agg["Normalized_Category"].apply(generate_color)
+
+# Plot radial map
 fig = go.Figure()
-color = "#636efa"
 
 for _, row in agg.iterrows():
     link = f"categories/{row['Normalized_Category']}.html"
-    custom = f"{row['Position_Category']}||{link}"  # customdata as flat string
     fig.add_trace(go.Scatterpolar(
         r=[row["Radius"]],
         theta=[row["Theta"]],
         mode="markers",
         marker=dict(
             size=8 + row["Frequency"] * 2,
-            color=color,
+            color=row["Color"],
             line=dict(color="#000", width=1.2),
-            opacity=0.92
+            opacity=0.9
         ),
         hovertext=f"{row['Position_Category']} (Total: {row['Frequency']})",
         hoverinfo="text",
-        customdata=[custom],
+        customdata=[[row["Position_Category"], link]],
         name=""
     ))
 
 fig.update_layout(
-    title="HIM Career Map",
+    title="Top Position Categories Across Health Career Domains",
     polar=dict(
         bgcolor="#000000",
-        radialaxis=dict(visible=False, range=[0, 2]),
-        angularaxis=dict(
-            visible=True,
-            tickvals=list(cat_angle_map.values()),
-            ticktext=list(cat_angle_map.keys()),
-            tickfont=dict(size=11, color="#FFFFFF")
-        )
+        radialaxis=dict(visible=False, range=[0, 2.5]),
+        angularaxis=dict(visible=False)
     ),
     paper_bgcolor="#000000",
     font=dict(color="#FFFFFF"),
@@ -75,35 +72,25 @@ fig.update_layout(
     height=950
 )
 
-# Inject into HTML
+# Embed chart into HTML
 chart_html = fig.to_html(include_plotlyjs="cdn", full_html=False, div_id="map-container")
 with open("../template/index_template.html", "r", encoding="utf-8") as f:
-    template = f.read()
+    base = f.read()
+html_out = base.replace("<!--RADIAL_MAP-->", chart_html)
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_out)
+print("✅ index.html generated.")
 
-final_output = template.replace("<!--RADIAL_MAP-->", chart_html)
-with open("../index.html", "w", encoding="utf-8") as f:
-    f.write(final_output)
+# Create individual role pages
+output_dir = "categories"
+os.makedirs(output_dir, exist_ok=True)
+summary = df.groupby(["Position_Category", "Career_Level", "Domain"]).agg(Frequency=("ID_No", "count")).reset_index()
+summary["Normalized_Category"] = summary["Position_Category"].apply(normalize_name)
 
-print("✅ Radial map embedded to index.html")
-
-# Generate category pages
-out_dir = os.path.join(os.path.dirname(__file__), "..", "categories")
-os.makedirs(out_dir, exist_ok=True)
-
-grouped = (
-    df.groupby(["Position_Category", "Career_Level", "Domain"])
-    .agg(Frequency=("ID_No", "count"))
-    .reset_index()
-)
-grouped["Normalized_Category"] = grouped["Position_Category"].apply(normalize_name)
-
-for cat in grouped["Normalized_Category"].unique():
-    sub = grouped[grouped["Normalized_Category"] == cat]
+for cat in summary["Normalized_Category"].unique():
+    sub = summary[summary["Normalized_Category"] == cat]
     original_name = sub["Position_Category"].iloc[0]
-
-    rows = ""
-    for _, r in sub.iterrows():
-        rows += f"<li>{r['Domain']} - {r['Career_Level']} → {r['Frequency']}</li>\n"
+    details = "\n".join(f"<li>{row['Domain']} - {row['Career_Level']} → {row['Frequency']}</li>" for _, row in sub.iterrows())
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -121,11 +108,11 @@ for cat in grouped["Normalized_Category"].unique():
   <p>This page includes detailed data combinations for the <strong>{original_name}</strong> category.</p>
   <hr>
   <h3>Stats (by Domain and Career Level):</h3>
-  <ul>{rows}</ul>
+  <ul>{details}</ul>
 </body>
 </html>
 """
-    with open(os.path.join(out_dir, f"{cat}.html"), "w", encoding="utf-8") as f:
+    with open(f"{output_dir}/{cat}.html", "w", encoding="utf-8") as f:
         f.write(html)
 
-print("✅ Category pages generated.")
+print("✅ Category pages written to /categories/")
