@@ -9,20 +9,38 @@
       padding: 0;
       height: 100%;
       overflow: auto;
+      font-family: Arial, sans-serif;
     }
+
+    nav {
+      background: #222;
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav a {
+      color: white;
+      margin-right: 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
     #viewport {
       width: 100%;
       height: 100%;
       overflow: scroll;
     }
+
     #zoom-layer {
       width: 2000px;
       height: 1500px;
-      background: url('images/healthfacility.jpg') no-repeat center center;
+      background: url('../images/healthfacility.jpg') no-repeat center center;
       background-size: cover;
       position: relative;
       transform-origin: 0 0;
     }
+
     .dot {
       position: absolute;
       background-color: #000000;
@@ -38,11 +56,13 @@
       animation: fadeBlink 3s ease-in-out infinite;
       transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     }
+
     .dot:hover {
       transform: scale(1.3) rotate(-2deg);
       background-color: #ff3b3b;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
+
     .dot::after {
       content: attr(title);
       position: absolute;
@@ -59,9 +79,11 @@
       white-space: nowrap;
       transition: opacity 0.3s;
     }
+
     .dot:hover::after {
       opacity: 1;
     }
+
     @keyframes fadeBlink {
       0%, 100% { opacity: 0.4; }
       50% { opacity: 1; }
@@ -69,11 +91,19 @@
   </style>
 </head>
 <body>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="career_map.html">Career Map</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
   <div id="viewport">
     <div id="zoom-layer">
       <!--DOT_CONTAINER-->
     </div>
   </div>
+
   <script>
     let zoom = 1;
     document.addEventListener('wheel', (e) => {
