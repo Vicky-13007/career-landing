@@ -5,33 +5,42 @@ import os
 
 # Load the dataset
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
-categories = df["Position_Category"].dropna().unique()
 
-# Normalize for filenames
+# Group by Position_Category and extract Domain and Career Level
+grouped = df.groupby("Position_Category").agg({
+    "Domain": lambda x: ", ".join(sorted(set(x.dropna()))),
+    "Career_Level": lambda x: ", ".join(sorted(set(x.dropna())))
+}).reset_index()
+
+# Normalize Position_Category for filenames
 def norm(x):
     return re.sub(r'[^a-z0-9_]', '', re.sub(r'\s+', '_', x.strip().lower()))
 
-# Randomly spread across a large canvas
+# Generate non-overlapping-ish coordinates for dots
 np.random.seed(42)
 canvas_width = 2000
 canvas_height = 1500
 positions = list(zip(
-    np.random.randint(100, canvas_width - 150, size=len(categories)),
-    np.random.randint(100, canvas_height - 40, size=len(categories))
+    np.random.randint(100, canvas_width - 150, size=len(grouped)),
+    np.random.randint(100, canvas_height - 40, size=len(grouped))
 ))
 
-# Build HTML for each category dot
-dots = ""
-for label, (x, y) in zip(categories, positions):
-    filename = norm(label)
-    dots += f'<div class="dot" style="left: {x}px; top: {y}px;" onclick="window.open(\'categories/{filename}.html\', \'_blank\')" title="{label}">{label}</div>\n'
+# Build dot HTML elements with tooltips
+dot_divs = ""
+for (idx, row), (x, y) in zip(grouped.iterrows(), positions):
+    title = row["Position_Category"]
+    domain = row["Domain"]
+    level = row["Career_Level"]
+    tooltip = f"{title} | {domain} | {level}"
+    filename = norm(title)
+    dot_divs += f'<div class="dot" style="left: {x}px; top: {y}px;" title="{tooltip}" onclick="window.open(\'categories/{filename}.html\', \'_blank\')">{title}</div>\n'
 
-# Load the index template
+# Load index_template.html
 with open("../template/index_template.html", "r", encoding="utf-8") as f:
     template = f.read()
 
-# Inject the dots into the template
+# Inject the dot HTML into the placeholder
 with open("../index.html", "w", encoding="utf-8") as f:
-    f.write(template.replace("<!--DOT_CONTAINER-->", dots))
+    f.write(template.replace("<!--DOT_CONTAINER-->", dot_divs))
 
-print("✅ index.html successfully generated with real category positions.")
+print("✅ index.html successfully generated with tooltips and real categories.")
