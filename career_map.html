@@ -9,6 +9,7 @@
       padding: 0;
       height: 100%;
       overflow: auto;
+      font-family: Arial, sans-serif;
     }
     nav {
       background:#222;
@@ -21,6 +22,17 @@
       color:white;
       margin-right:20px;
       text-decoration:none;
+    }
+    #filters {
+      background: #f4f4f4;
+      padding: 10px 20px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    select {
+      padding: 8px;
+      font-size: 14px;
     }
     #viewport {
       width: 100%;
@@ -78,6 +90,13 @@
       0%, 100% { opacity: 0.4; }
       50% { opacity: 1; }
     }
+    footer {
+      background: #222;
+      color: #fff;
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -87,6 +106,16 @@
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </nav>
+  <div id="filters">
+    <label for="domainFilter">Filter by Domain:</label>
+    <select id="domainFilter">
+      <option value="all">All</option>
+    </select>
+    <label for="levelFilter">Filter by Career Level:</label>
+    <select id="levelFilter">
+      <option value="all">All</option>
+    </select>
+  </div>
   <div id="viewport">
     <div id="zoom-layer">
       <div class="dot" style="left: 1226px; top: 610px;" title="Business Analyst | Health Informatics | Early Career" onclick="window.open('categories/business_analyst.html', '_blank')">Business Analyst</div>
@@ -133,6 +162,9 @@
 
     </div>
   </div>
+  <footer>
+    &copy; 2025 HIM Career Explorer | Designed for education and career visibility purposes.
+  </footer>
   <script>
     let zoom = 1;
     document.addEventListener('wheel', (e) => {
@@ -143,6 +175,48 @@
         document.getElementById('zoom-layer').style.transform = `scale(${zoom})`;
       }
     }, { passive: false });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const domainSet = new Set();
+      const levelSet = new Set();
+      document.querySelectorAll('.dot').forEach(dot => {
+        const title = dot.getAttribute('title');
+        const [, domain, level] = title.split("|").map(s => s.trim());
+        domain.split(",").forEach(d => domainSet.add(d.trim()));
+        level.split(",").forEach(l => levelSet.add(l.trim()));
+        dot.dataset.domain = domain;
+        dot.dataset.level = level;
+      });
+
+      const domainFilter = document.getElementById('domainFilter');
+      [...domainSet].sort().forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = d;
+        domainFilter.appendChild(opt);
+      });
+
+      const levelFilter = document.getElementById('levelFilter');
+      [...levelSet].sort().forEach(l => {
+        const opt = document.createElement('option');
+        opt.value = l;
+        opt.textContent = l;
+        levelFilter.appendChild(opt);
+      });
+
+      function applyFilters() {
+        const domainVal = domainFilter.value;
+        const levelVal = levelFilter.value;
+        document.querySelectorAll('.dot').forEach(dot => {
+          const dMatch = domainVal === 'all' || dot.dataset.domain.includes(domainVal);
+          const lMatch = levelVal === 'all' || dot.dataset.level.includes(levelVal);
+          dot.style.display = dMatch && lMatch ? 'block' : 'none';
+        });
+      }
+
+      domainFilter.addEventListener('change', applyFilters);
+      levelFilter.addEventListener('change', applyFilters);
+    });
   </script>
 </body>
 </html>

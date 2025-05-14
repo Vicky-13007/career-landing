@@ -39,8 +39,8 @@ for (idx, row), (x, y) in zip(grouped.iterrows(), positions):
 with open("../template/index_template.html", "r", encoding="utf-8") as f:
     template = f.read()
 
-# Inject the dot HTML into the placeholder
+# Inject the dot HTML into the placeholder and write to career_map.html
 with open("../career_map.html", "w", encoding="utf-8") as f:
     f.write(template.replace("<!--DOT_CONTAINER-->", dot_divs))
 
-print("✅ index.html successfully generated with tooltips and real categories.")
+print("✅ career_map.html successfully generated with tooltips and filters.")
