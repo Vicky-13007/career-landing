@@ -22,10 +22,16 @@
       text-decoration: none;
     }
     #sankey-container {
-      overflow: auto;
-      width: 100%;
+      overflow: scroll;
+      width: 100vw;
       height: 90vh;
       padding: 20px;
+    }
+    #note {
+      padding: 15px 20px;
+      font-size: 14px;
+      background: #f9f9f9;
+      border-top: 1px solid #ccc;
     }
   </style>
 </head>
@@ -40,19 +46,37 @@
   <div id="sankey-container">
     <div id="sankey"></div>
   </div>
+  <div id="note">
+    <strong>Note:</strong> Some nodes are shown without links. These represent position categories that do not participate in transitions but are still part of the dataset. They are highlighted in <span style="color: #e74c3c; font-weight: bold;">red</span> for clarity.
+  </div>
 
   <script>
     fetch('data/sankey_data.json')
       .then(response => response.json())
       .then(data => {
-        const colors = data.nodes.map((_, i) => `hsl(${i * 37 % 360}, 70%, 60%)`);
+        const linkedNames = new Set();
+        data.links.forEach(link => {
+          linkedNames.add(data.nodes[link.source].name);
+          linkedNames.add(data.nodes[link.target].name);
+        });
+
+        const colors = data.nodes.map(node =>
+          linkedNames.has(node.name) ? `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)` : '#e74c3c'
+        );
+
+        const hoverTexts = data.nodes.map(node =>
+          linkedNames.has(node.name) ?
+            `${node.name}` : `${node.name} (No transitions)`
+        );
+
         const layout = {
           title: "Career Path Transitions",
           font: { size: 12 },
-          height: 1000,
-          width: 1600,
+          height: 1200,
+          width: 2400,
           margin: { t: 50, l: 50, r: 50, b: 50 },
         };
+
         const trace = {
           type: "sankey",
           orientation: "h",
@@ -62,6 +86,8 @@
             line: { color: "black", width: 0.5 },
             label: data.nodes.map(n => n.name),
             color: colors,
+            hovertext: hoverTexts,
+            hoverinfo: 'text'
           },
           link: {
             source: data.links.map(l => l.source),
