@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Career Path</title>
+  <meta charset="UTF-8" />
+  <title>Career Path of HIM Graduates</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
       font-family: Arial, sans-serif;
-      overflow: hidden;
     }
     nav {
-      background:#222;
-      padding:10px 20px;
-      position:sticky;
-      top:0;
-      z-index:999;
+      background: #222;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
     }
     nav a {
-      color:white;
-      margin-right:20px;
-      text-decoration:none;
+      color: white;
+      margin-right: 20px;
+      text-decoration: none;
     }
-    #chart-container {
-      width: 100%;
-      height: calc(100% - 80px);
+    h1 {
+      text-align: center;
+      padding: 20px 10px 0;
+      font-size: 26px;
+      color: #2c3e50;
+    }
+    #sankey-container {
       overflow: scroll;
-      position: relative;
+      width: 100vw;
+      height: 90vh;
     }
     #sankey-chart {
-      min-width: 1800px;
-      min-height: 1000px;
+      width: 3000px;
+      height: 2000px;
     }
     footer {
       background: #222;
@@ -52,8 +54,8 @@
     <a href="contact.html">Contact</a>
   </nav>
 
-  <h2 style="text-align:center; color:#2c3e50;">Career Transition Paths of HIM Graduates</h2>
-  <div id="chart-container">
+  <h1>Career Transition Paths of HIM Graduates</h1>
+  <div id="sankey-container">
     <div id="sankey-chart"></div>
   </div>
 
@@ -63,46 +65,33 @@
 
   <script>
     fetch('data/sankey_data.json')
-      .then(res => res.json())
+      .then(response => response.json())
       .then(data => {
-        const layout = {
-          font: { size: 12 },
-          height: 1200,
-          width: 1800,
-          margin: { l: 50, r: 50, b: 50, t: 0 },
-          hovermode: 'closest',
-          plot_bgcolor: '#fff',
-          paper_bgcolor: '#fff',
-          sankey: {
-            orientation: "v",
-            node: {
-              pad: 20,
-              thickness: 20,
-              line: { color: "black", width: 1 },
-              label: data.labels,
-              color: data.colors
-            },
-            link: {
-              source: data.sources,
-              target: data.targets,
-              value: data.values,
-              label: data.tooltips
-            }
+        const sankeyData = {
+          type: "sankey",
+          orientation: "h",
+          node: {
+            pad: 15,
+            thickness: 20,
+            line: { color: "black", width: 0.5 },
+            label: data.nodes.map(n => n.name),
+            color: data.nodes.map((_, i) => `hsl(${(i * 47) % 360},70%,60%)`)
+          },
+          link: {
+            source: data.links.map(l => l.source),
+            target: data.links.map(l => l.target),
+            value: data.links.map(l => l.value)
           }
         };
 
-        const trace = {
-          type: "sankey",
-          domain: { x: [0, 1], y: [0, 1] },
-          ...layout.sankey
+        const layout = {
+          margin: { l: 50, r: 50, t: 30, b: 20 },
+          font: { size: 14 }
         };
 
-        Plotly.newPlot('sankey-chart', [trace], layout);
+        Plotly.newPlot('sankey-chart', [sankeyData], layout);
       })
-      .catch(err => {
-        document.getElementById('sankey-chart').innerHTML = "<p style='color:red; padding:20px;'>Failed to load Sankey data. Check file path or format.</p>";
-        console.error(err);
-      });
+      .catch(err => console.error("Failed to load Sankey data:", err));
   </script>
 </body>
 </html>
