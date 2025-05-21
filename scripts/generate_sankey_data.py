@@ -29,8 +29,9 @@ edges = pd.concat(paths)
 # Count frequency of each transition
 flow = edges.value_counts().reset_index(name="count")
 
-# Unique nodes
-nodes = pd.Series(pd.unique(flow[["source", "target"]].values.ravel())).reset_index()
+# Ensure all unique nodes are captured
+all_nodes = pd.unique(df["Position_Category"].dropna())
+nodes = pd.DataFrame(all_nodes, columns=["label"]).reset_index()
 nodes.columns = ["id", "label"]
 
 # Build name to index map
@@ -46,6 +47,7 @@ sankey = {
             "value": int(val)
         }
         for src, tgt, val in flow.itertuples(index=False)
+        if src in name_to_id and tgt in name_to_id
     ]
 }
 
