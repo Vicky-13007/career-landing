@@ -5,41 +5,42 @@ import os
 # Load the dataset
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
 
-# Sort data by ID and Position_No (to preserve career path order)
-df_sorted = df.sort_values(by=["ID_No", "Position_No"])
+# Sort by ID and Career_Level (if available)
+if "Career_Level" in df.columns:
+    level_order = {"Early Career": 0, "Established Career": 1, "Advanced Career": 2}
+    df["level_order"] = df["Career_Level"].map(level_order)
+    df = df.sort_values(by=["ID_No", "level_order"])
+else:
+    df = df.sort_values(by=["ID_No"])
 
-# Filter only necessary columns
-paths = df_sorted[["ID_No", "Position_Category"]]
+# Group by ID and get sequential transitions
+all_paths = df.groupby("ID_No")["Position_Category"].apply(list)
 
-# Group by ID and extract the list of transitions
-career_paths = paths.groupby("ID_No")["Position_Category"].apply(list)
-
-# Initialize link structure
-links = {}
-for path in career_paths:
+# Count transitions
+transition_counts = {}
+for path in all_paths:
     for i in range(len(path) - 1):
-        source = path[i].strip()
-        target = path[i + 1].strip()
-        if source != target:  # skip if same position repeated
-            key = (source, target)
-            links[key] = links.get(key, 0) + 1
+        src = path[i]
+        tgt = path[i+1]
+        key = (src, tgt)
+        transition_counts[key] = transition_counts.get(key, 0) + 1
 
-# Prepare nodes and links for Sankey
-all_nodes = sorted(set([n for pair in links for n in pair]))
-node_index = {name: i for i, name in enumerate(all_nodes)}
+# Map positions to node indices
+positions = sorted(set([pos for pair in transition_counts for pos in pair]))
+position_to_idx = {pos: i for i, pos in enumerate(positions)}
 
-sankey_json = {
-    "nodes": [{"name": name} for name in all_nodes],
+# Construct Sankey data
+sankey_data = {
+    "nodes": positions,
     "links": [
-        {"source": node_index[src], "target": node_index[tgt], "value": count}
-        for (src, tgt), count in links.items()
+        {"source": position_to_idx[src], "target": position_to_idx[tgt], "value": count}
+        for (src, tgt), count in transition_counts.items()
     ]
 }
 
-# Save to JSON
-output_path = "../data/sankey_data.json"
-os.makedirs(os.path.dirname(output_path), exist_ok=True)
-with open(output_path, "w", encoding="utf-8") as f:
-    json.dump(sankey_json, f, indent=2)
+# Save as JSON
+os.makedirs("../data", exist_ok=True)
+with open("../data/sankey_data.json", "w", encoding="utf-8") as f:
+    json.dump(sankey_data, f, indent=2)
 
-print("✅ Sankey data generated and saved to data/sankey_data.json")
+print("Sankey data saved to data/sankey_data.json")
