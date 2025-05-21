@@ -2,41 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Career Pathways – Sankey Diagram</title>
+  <title>Career Path – HIM Explorer</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
+      padding: 0;
+      background: white;
     }
     nav {
-      background:#222;
-      padding:10px 20px;
-      position:sticky;
-      top:0;
-      z-index:999;
+      background: #222;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
     }
     nav a {
-      color:white;
-      margin-right:20px;
-      text-decoration:none;
+      color: white;
+      margin-right: 20px;
+      text-decoration: none;
     }
     h1 {
       text-align: center;
       color: #2c3e50;
-      margin-top: 20px;
+      padding: 20px 10px 10px;
     }
-    #sankey {
+    #chart {
       width: 100%;
-      height: 800px;
-    }
-    footer {
-      background: #222;
-      color: #fff;
-      text-align: center;
-      padding: 15px 10px;
-      font-size: 14px;
-      margin-top: 30px;
+      height: 90vh;
     }
   </style>
 </head>
@@ -50,39 +44,38 @@
   </nav>
 
   <h1>Career Transition Paths of HIM Graduates</h1>
-  <div id="sankey"></div>
-
-  <footer>
-    &copy; 2025 HIM Career Explorer | Data-based transitions visualized for clarity.
-  </footer>
+  <div id="chart"></div>
 
   <script>
-    fetch("data/sankey_data.json")
-      .then(res => res.json())
+    fetch('data/sankey_data.json')
+      .then(response => response.json())
       .then(data => {
+        const layout = {
+          font: { size: 13 },
+          margin: { l: 20, r: 20, t: 30, b: 20 },
+          width: window.innerWidth,
+          height: window.innerHeight - 100,
+        };
+
         const sankey = {
           type: "sankey",
           orientation: "h",
           node: {
-            pad: 20,
+            pad: 15,
             thickness: 20,
             line: { color: "black", width: 0.5 },
-            label: data.nodes.map(n => n.name),
-            color: "#3B82F6"
+            label: data.labels,
+            color: "#4F81BD"
           },
           link: {
-            source: data.links.map(l => l.source),
-            target: data.links.map(l => l.target),
-            value: data.links.map(l => l.value)
+            source: data.sources,
+            target: data.targets,
+            value: data.values,
+            color: "rgba(100,100,100,0.3)"
           }
         };
 
-        const layout = {
-          font: { size: 14 },
-          margin: { l: 50, r: 50, t: 50, b: 50 },
-        };
-
-        Plotly.newPlot("sankey", [sankey], layout);
+        Plotly.newPlot("chart", [sankey], layout);
       });
   </script>
 </body>
