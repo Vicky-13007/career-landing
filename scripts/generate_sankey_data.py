@@ -2,57 +2,57 @@ import pandas as pd
 import json
 import os
 
-# Load and clean
+# Load the dataset
 df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
-df = df[["ID_No", "Position_No", "Position_Category", "Domain"]].dropna()
-df = df.drop_duplicates(subset=["ID_No", "Position_No"], keep="first")
 
-# Ensure Position_No has order
-position_order = {"Position_1": 0, "Position_2": 1, "Position_3": 2}
-df["order"] = df["Position_No"].map(position_order)
-df = df.sort_values(by=["ID_No", "order"])
+# Validate necessary columns
+required_cols = {"ID_No", "Position_No", "Position_Category"}
+if not required_cols.issubset(df.columns):
+    raise ValueError(f"Dataset must contain columns: {required_cols}")
 
-# Create career transitions
-df["next_Position_Category"] = df.groupby("ID_No")["Position_Category"].shift(-1)
+# Drop duplicates to avoid reshaping issues
+df = df.drop_duplicates(subset=["ID_No", "Position_No"])
 
-# Drop where next is NaN
-df_links = df.dropna(subset=["next_Position_Category"])
+# Pivot to wide format with ordered columns
+wide = df.pivot(index="ID_No", columns="Position_No", values="Position_Category")
+wide = wide[["Position_1", "Position_2", "Position_3"]]  # ensure order
 
-# Count transitions
-links = df_links.groupby(["Position_Category", "next_Position_Category"]).size().reset_index(name="value")
+# Melt to get transitions
+paths = []
+for col1, col2 in zip(wide.columns, wide.columns[1:]):
+    chunk = wide[[col1, col2]].dropna()
+    chunk.columns = ["source", "target"]
+    paths.append(chunk)
 
-# Create list of all unique roles
-all_roles = pd.unique(links[["Position_Category", "next_Position_Category"]].values.ravel())
+edges = pd.concat(paths)
 
-# Map roles to indices
-role_to_index = {role: i for i, role in enumerate(all_roles)}
+# Count frequency of each transition
+flow = edges.value_counts().reset_index(name="count")
 
-# Optional: assign colors
-import random
-import colorsys
-random.seed(42)
-colors = [
-    f"rgba({int(r*255)}, {int(g*255)}, {int(b*255)}, 0.8)"
-    for r, g, b in [colorsys.hsv_to_rgb(i/len(all_roles), 0.6, 0.9) for i in range(len(all_roles))]
-]
+# Unique nodes
+nodes = pd.Series(pd.unique(flow[["source", "target"]].values.ravel())).reset_index()
+nodes.columns = ["id", "label"]
 
-# Build nodes and links
-nodes = [{"name": role, "color": colors[i]} for i, role in enumerate(all_roles)]
-sankey_links = {
-    "source": [role_to_index[src] for src in links["Position_Category"]],
-    "target": [role_to_index[tgt] for tgt in links["next_Position_Category"]],
-    "value": links["value"].tolist(),
+# Build name to index map
+name_to_id = {name: i for i, name in enumerate(nodes["label"])}
+
+# Build Sankey JSON structure
+sankey = {
+    "nodes": [{"name": name} for name in nodes["label"]],
+    "links": [
+        {
+            "source": name_to_id[src],
+            "target": name_to_id[tgt],
+            "value": int(val)
+        }
+        for src, tgt, val in flow.itertuples(index=False)
+    ]
 }
 
-# Final sankey JSON
-sankey_data = {
-    "nodes": nodes,
-    "links": sankey_links
-}
+# Output path
+out_path = "../data/sankey_data.json"
+os.makedirs(os.path.dirname(out_path), exist_ok=True)
+with open(out_path, "w") as f:
+    json.dump(sankey, f, indent=2)
 
-# Output JSON
-os.makedirs("../data", exist_ok=True)
-with open("../data/sankey_data.json", "w", encoding="utf-8") as f:
-    json.dump(sankey_data, f, indent=2)
-
-print("Sankey data written to data/sankey_data.json")
+print(f"✅ Sankey data saved to {out_path}")

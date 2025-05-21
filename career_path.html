@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>HIM Career Path Transitions</title>
+  <title>Career Path Visualization</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
@@ -14,7 +14,7 @@
       padding: 10px 20px;
       position: sticky;
       top: 0;
-      z-index: 1000;
+      z-index: 999;
     }
     nav a {
       color: white;
@@ -22,25 +22,10 @@
       text-decoration: none;
     }
     #sankey-container {
-      width: 100vw;
-      height: 90vh;
       overflow: auto;
-    }
-    #sankey {
-      width: 3500px;
-      height: 1600px;
-    }
-    h1 {
-      text-align: center;
-      margin: 20px;
-      color: #2c3e50;
-    }
-    footer {
-      background: #222;
-      color: #fff;
-      text-align: center;
-      padding: 10px;
-      font-size: 14px;
+      width: 100%;
+      height: 90vh;
+      padding: 20px;
     }
   </style>
 </head>
@@ -52,56 +37,45 @@
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </nav>
-
-  <h1>HIM Career Path Transitions</h1>
-
   <div id="sankey-container">
     <div id="sankey"></div>
   </div>
 
-  <footer>
-    &copy; 2025 HIM Career Explorer | Based on Graduate Career Data
-  </footer>
-
   <script>
-    fetch("data/sankey_data.json")
+    fetch('data/sankey_data.json')
       .then(response => response.json())
       .then(data => {
-        const sankeyData = {
+        const colors = data.nodes.map((_, i) => `hsl(${i * 37 % 360}, 70%, 60%)`);
+        const layout = {
+          title: "Career Path Transitions",
+          font: { size: 12 },
+          height: 1000,
+          width: 1600,
+          margin: { t: 50, l: 50, r: 50, b: 50 },
+        };
+        const trace = {
           type: "sankey",
           orientation: "h",
           node: {
             pad: 20,
             thickness: 30,
-            line: {
-              color: "black",
-              width: 1
-            },
-            label: data.nodes,
-            color: data.colors || undefined,
-            hovertemplate: "%{label}<br>incoming flow count: %{targetLinks.length}<br>outgoing flow count: %{sourceLinks.length}<extra></extra>",
+            line: { color: "black", width: 0.5 },
+            label: data.nodes.map(n => n.name),
+            color: colors,
           },
           link: {
             source: data.links.map(l => l.source),
             target: data.links.map(l => l.target),
             value: data.links.map(l => l.value),
-            color: "rgba(150,150,150,0.4)",
-            hovertemplate: "%{value} transitions<extra></extra>",
+            hovertemplate: "%{source.label} → %{target.label}<br>Count: %{value}<extra></extra>",
+            color: "rgba(170,170,170,0.4)"
           }
         };
-
-        const layout = {
-          font: { size: 14 },
-          width: 3400,
-          height: 1500,
-          margin: { t: 50, l: 20, r: 20, b: 20 },
-          hovermode: 'closest'
-        };
-
-        Plotly.newPlot('sankey', [sankeyData], layout);
+        Plotly.newPlot("sankey", [trace], layout);
       })
-      .catch(err => {
-        console.error("Failed to load sankey data:", err);
+      .catch(error => {
+        document.getElementById("sankey").innerHTML = "<p style='color:red;'>Failed to load Sankey data. Check if data/sankey_data.json exists.</p>";
+        console.error(error);
       });
   </script>
 </body>
