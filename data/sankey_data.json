@@ -1,327 +1,701 @@
 {
   "nodes": [
-    "Business Analyst",
-    "Chief/Deputy HIM",
-    "Clinical Documentation Specialist",
-    "Clinical Forms Manager",
-    "Clinical System Manager",
-    "Company Director",
-    "Credential Trainer",
-    "Data Analyst",
-    "Data Assurance Officer",
-    "Data Collection Officer",
-    "Data Manager",
-    "Data Training Officer",
-    "Database Manager",
-    "EMR Analyst/Manager",
-    "HIM Clinical Coder",
-    "HIM Health Data Reporter",
-    "HIM Supervisor/Team Leader",
-    "HIS Project Officer",
-    "Health Dataset Officer",
-    "Health Information Manager",
-    "Health Information Officer",
-    "Information Management Advisor",
-    "Mental Health, Health Information Manager",
-    "Operations Manager",
-    "Patient Relationship Officer",
-    "Planning Officer",
-    "Product Analyst",
-    "Program and Data Support",
-    "Project Manager",
-    "Project Officer",
-    "Research Officer",
-    "Senior Health Information Manager",
-    "Sessional Tutor",
-    "Specialist Medical Coders",
-    "Strategic Planning and Reporting Officer",
-    "System Analyst",
-    "Training and Auditing Coordinator"
+    {
+      "name": "A/Deputy HIS Manager"
+    },
+    {
+      "name": "BHH HIS Operations Manager"
+    },
+    {
+      "name": "BOS Administrator/Data Assurance Analyst"
+    },
+    {
+      "name": "Business Analyst and Health Info Specialist"
+    },
+    {
+      "name": "CPF Project Support Officer"
+    },
+    {
+      "name": "Casual sessional tutor"
+    },
+    {
+      "name": "Chief Health Information"
+    },
+    {
+      "name": "Clinical Coder"
+    },
+    {
+      "name": "Clinical Coder/ Health Information Manager"
+    },
+    {
+      "name": "Clinical Documentation Specialist"
+    },
+    {
+      "name": "Clinical Forms Officer"
+    },
+    {
+      "name": "Clinical System Manager"
+    },
+    {
+      "name": "Clinical coder "
+    },
+    {
+      "name": "Clinical documentation specialist"
+    },
+    {
+      "name": "Coder and billing officer"
+    },
+    {
+      "name": "Company Director"
+    },
+    {
+      "name": "Consultant"
+    },
+    {
+      "name": "Credential Trainer"
+    },
+    {
+      "name": "Data Analysis"
+    },
+    {
+      "name": "Data Analyst"
+    },
+    {
+      "name": "Data Assurance Analyst"
+    },
+    {
+      "name": "Data Assurance Lead"
+    },
+    {
+      "name": "Data Assurance Officer"
+    },
+    {
+      "name": "Data Collection Officer"
+    },
+    {
+      "name": "Data Collector"
+    },
+    {
+      "name": "Data Coordinator"
+    },
+    {
+      "name": "Data Integrity Trainer "
+    },
+    {
+      "name": "Data Manager"
+    },
+    {
+      "name": "Data Manager - Informatics"
+    },
+    {
+      "name": "Data Officer"
+    },
+    {
+      "name": "Data Quality and Reporting"
+    },
+    {
+      "name": "Data Support / Surveillance Officer - Informatics"
+    },
+    {
+      "name": "Data Training Officer"
+    },
+    {
+      "name": "Database Manager"
+    },
+    {
+      "name": "Deputy Health Information Manager"
+    },
+    {
+      "name": "Digital Health and QI Officer"
+    },
+    {
+      "name": "ECM Operations Manager"
+    },
+    {
+      "name": "EMR Clinical Analyst"
+    },
+    {
+      "name": "EMR Data Officer"
+    },
+    {
+      "name": "EMR Identity and Patient Movement Analyst"
+    },
+    {
+      "name": "HIM"
+    },
+    {
+      "name": "HIM/ Product Specialist/ Subject matter expert "
+    },
+    {
+      "name": "HIM/ medical records clerk "
+    },
+    {
+      "name": "HIM/Clinical Coder"
+    },
+    {
+      "name": "HIM/Clinical Coder &HIM/Clerical supervisor"
+    },
+    {
+      "name": "HIM/Medical Coder/HIS Change and Implementation Lead"
+    },
+    {
+      "name": "HIS Project Officer"
+    },
+    {
+      "name": "Health Data Manager"
+    },
+    {
+      "name": "Health Dataset Officer"
+    },
+    {
+      "name": "Health Infomation Manager/Clinical Coder"
+    },
+    {
+      "name": "Health Information Management"
+    },
+    {
+      "name": "Health Information Management - Subacute VAED"
+    },
+    {
+      "name": "Health Information Manager"
+    },
+    {
+      "name": "Health Information Manager "
+    },
+    {
+      "name": "Health Information Manager (Data Quality)"
+    },
+    {
+      "name": "Health Information Manager - Clinical Coding"
+    },
+    {
+      "name": "Health Information Manager - Data Integrity"
+    },
+    {
+      "name": "Health Information Manager - ESIS and Paper Forms"
+    },
+    {
+      "name": "Health Information Manager - Mental Health"
+    },
+    {
+      "name": "Health Information Manager - Mental Health "
+    },
+    {
+      "name": "Health Information Manager / Clinical Coder"
+    },
+    {
+      "name": "Health Information Manager, Clinical Coder"
+    },
+    {
+      "name": "Health Information Manager, Systems & Extracts"
+    },
+    {
+      "name": "Health Information Manager- Clinical Coder"
+    },
+    {
+      "name": "Health Information Manager/ Clinical Coder"
+    },
+    {
+      "name": "Health Information Manager/Client Applications Manager"
+    },
+    {
+      "name": "Health Information Manager/Clinical Coder"
+    },
+    {
+      "name": "Health Information Officer"
+    },
+    {
+      "name": "Health Information Services Manager"
+    },
+    {
+      "name": "Health Information Services Team Leader "
+    },
+    {
+      "name": "Health Information Specialist"
+    },
+    {
+      "name": "Information Analyst"
+    },
+    {
+      "name": "Information Management"
+    },
+    {
+      "name": "Information Management Advisor"
+    },
+    {
+      "name": "Manager, Clinical Information Service"
+    },
+    {
+      "name": "Manager, Health Information Services"
+    },
+    {
+      "name": "Manager- Clinical Information Department"
+    },
+    {
+      "name": "Medical Coder"
+    },
+    {
+      "name": "Medical Coder/Coordinator Electronic Notifications/Data Analyst"
+    },
+    {
+      "name": "Mental Health - Health Information Manager"
+    },
+    {
+      "name": "Metadata and Classifications Analyst "
+    },
+    {
+      "name": "Office Manager - medical records service"
+    },
+    {
+      "name": "Operations Manager"
+    },
+    {
+      "name": "Outpatient Document Imaging and Culling Manager"
+    },
+    {
+      "name": "Patient Relationship Officer"
+    },
+    {
+      "name": "Payments Integrity officer/ Health Information Manager"
+    },
+    {
+      "name": "Planning Officer"
+    },
+    {
+      "name": "Product Analyst"
+    },
+    {
+      "name": "Program and Data Support"
+    },
+    {
+      "name": "Project Manager"
+    },
+    {
+      "name": "Project Manager, Medical Record Digitisation"
+    },
+    {
+      "name": "Project Officer"
+    },
+    {
+      "name": "Project Ofiicer"
+    },
+    {
+      "name": "Research Administration Officer"
+    },
+    {
+      "name": "Research Assistant"
+    },
+    {
+      "name": "Research Data Manager"
+    },
+    {
+      "name": "Research Officer"
+    },
+    {
+      "name": "Scanning Centre Operations Manager"
+    },
+    {
+      "name": "Senior Buisness Analyst"
+    },
+    {
+      "name": "Senior Clinical Coder"
+    },
+    {
+      "name": "Senior Data Manager"
+    },
+    {
+      "name": "Senior Health Information"
+    },
+    {
+      "name": "Senior Health Information Manager/Coding Auditor"
+    },
+    {
+      "name": "Senior Metadata Developer/Information Management Adviser"
+    },
+    {
+      "name": "Senior Project Officer"
+    },
+    {
+      "name": "Strategic Planning and Reporting Officer"
+    },
+    {
+      "name": "Subacute Data Officer"
+    },
+    {
+      "name": "Subject Matter Expert for Electronic Medical Record"
+    },
+    {
+      "name": "Support Project Officer"
+    },
+    {
+      "name": "System Analyst"
+    },
+    {
+      "name": "Team Leader of Health Information Service"
+    },
+    {
+      "name": "Team Leader, Health Information Services"
+    },
+    {
+      "name": "Technical Business Analyst "
+    },
+    {
+      "name": "Telstra Health- Clinical Coder"
+    },
+    {
+      "name": "Training and Auditing Coordinator "
+    },
+    {
+      "name": "Users, Provider and Security Lead "
+    },
+    {
+      "name": "Users, Providers and Security Analysis "
+    },
+    {
+      "name": "Users, Providers and Security Analyst"
+    },
+    {
+      "name": "VAED Data Officer"
+    },
+    {
+      "name": "VINAH data officer "
+    },
+    {
+      "name": "eMR Application Specialist"
+    },
+    {
+      "name": "health information manager/clinical coder "
+    }
   ],
   "links": [
     {
-      "source": 35,
-      "target": 21,
-      "value": 1
-    },
-    {
-      "source": 10,
-      "target": 9,
-      "value": 1
-    },
-    {
-      "source": 19,
-      "target": 6,
-      "value": 1
-    },
-    {
-      "source": 10,
-      "target": 10,
-      "value": 3
-    },
-    {
-      "source": 10,
-      "target": 0,
-      "value": 1
-    },
-    {
-      "source": 15,
-      "target": 15,
-      "value": 1
-    },
-    {
-      "source": 16,
-      "target": 29,
-      "value": 1
-    },
-    {
-      "source": 17,
-      "target": 17,
-      "value": 2
-    },
-    {
-      "source": 17,
-      "target": 15,
-      "value": 1
-    },
-    {
-      "source": 30,
-      "target": 10,
-      "value": 1
-    },
-    {
-      "source": 3,
-      "target": 3,
-      "value": 1
-    },
-    {
-      "source": 1,
-      "target": 19,
-      "value": 1
-    },
-    {
-      "source": 13,
-      "target": 26,
-      "value": 1
-    },
-    {
-      "source": 29,
-      "target": 10,
-      "value": 1
-    },
-    {
-      "source": 10,
-      "target": 19,
-      "value": 1
-    },
-    {
-      "source": 14,
-      "target": 14,
-      "value": 7
-    },
-    {
-      "source": 14,
-      "target": 12,
-      "value": 1
-    },
-    {
-      "source": 19,
-      "target": 19,
-      "value": 15
-    },
-    {
-      "source": 19,
-      "target": 31,
-      "value": 1
-    },
-    {
-      "source": 31,
-      "target": 31,
-      "value": 1
-    },
-    {
-      "source": 31,
-      "target": 19,
-      "value": 2
-    },
-    {
-      "source": 21,
-      "target": 29,
-      "value": 1
-    },
-    {
-      "source": 29,
-      "target": 21,
-      "value": 1
-    },
-    {
-      "source": 19,
-      "target": 14,
-      "value": 1
-    },
-    {
-      "source": 14,
-      "target": 8,
-      "value": 1
-    },
-    {
-      "source": 18,
-      "target": 18,
-      "value": 2
-    },
-    {
-      "source": 18,
-      "target": 14,
-      "value": 1
-    },
-    {
-      "source": 14,
-      "target": 13,
-      "value": 1
-    },
-    {
-      "source": 29,
-      "target": 13,
-      "value": 1
-    },
-    {
-      "source": 13,
-      "target": 13,
-      "value": 1
-    },
-    {
-      "source": 33,
-      "target": 33,
-      "value": 1
-    },
-    {
-      "source": 33,
-      "target": 14,
-      "value": 1
-    },
-    {
-      "source": 2,
-      "target": 2,
-      "value": 1
-    },
-    {
-      "source": 2,
-      "target": 5,
-      "value": 1
-    },
-    {
-      "source": 13,
-      "target": 0,
-      "value": 1
-    },
-    {
-      "source": 14,
-      "target": 19,
-      "value": 3
-    },
-    {
-      "source": 8,
-      "target": 8,
-      "value": 1
-    },
-    {
-      "source": 30,
-      "target": 30,
-      "value": 1
-    },
-    {
-      "source": 30,
-      "target": 28,
-      "value": 1
-    },
-    {
-      "source": 30,
-      "target": 19,
-      "value": 1
-    },
-    {
-      "source": 8,
-      "target": 21,
+      "source": 109,
+      "target": 72,
       "value": 1
     },
     {
       "source": 23,
-      "target": 14,
+      "target": 100,
       "value": 1
     },
     {
-      "source": 16,
-      "target": 14,
-      "value": 3
-    },
-    {
-      "source": 16,
-      "target": 1,
+      "source": 70,
+      "target": 17,
       "value": 1
     },
     {
-      "source": 10,
-      "target": 7,
+      "source": 27,
+      "target": 100,
       "value": 1
     },
     {
-      "source": 7,
-      "target": 34,
+      "source": 100,
+      "target": 98,
       "value": 1
     },
     {
-      "source": 9,
-      "target": 19,
+      "source": 57,
+      "target": 51,
       "value": 1
     },
     {
-      "source": 24,
+      "source": 110,
+      "target": 104,
+      "value": 1
+    },
+    {
+      "source": 4,
+      "target": 4,
+      "value": 1
+    },
+    {
+      "source": 4,
+      "target": 46,
+      "value": 1
+    },
+    {
+      "source": 46,
+      "target": 56,
+      "value": 1
+    },
+    {
+      "source": 96,
       "target": 27,
       "value": 1
     },
     {
       "source": 27,
+      "target": 27,
+      "value": 1
+    },
+    {
+      "source": 10,
       "target": 10,
       "value": 1
     },
     {
+      "source": 52,
+      "target": 6,
+      "value": 1
+    },
+    {
+      "source": 120,
+      "target": 87,
+      "value": 1
+    },
+    {
+      "source": 91,
+      "target": 47,
+      "value": 1
+    },
+    {
+      "source": 47,
+      "target": 52,
+      "value": 1
+    },
+    {
+      "source": 7,
+      "target": 7,
+      "value": 1
+    },
+    {
+      "source": 7,
+      "target": 33,
+      "value": 1
+    },
+    {
+      "source": 52,
+      "target": 52,
+      "value": 14
+    },
+    {
+      "source": 52,
+      "target": 102,
+      "value": 1
+    },
+    {
+      "source": 102,
+      "target": 102,
+      "value": 1
+    },
+    {
+      "source": 73,
+      "target": 91,
+      "value": 1
+    },
+    {
+      "source": 91,
+      "target": 103,
+      "value": 1
+    },
+    {
+      "source": 7,
+      "target": 52,
+      "value": 2
+    },
+    {
+      "source": 43,
+      "target": 43,
+      "value": 1
+    },
+    {
+      "source": 7,
+      "target": 22,
+      "value": 1
+    },
+    {
+      "source": 48,
+      "target": 48,
+      "value": 1
+    },
+    {
+      "source": 48,
+      "target": 8,
+      "value": 1
+    },
+    {
+      "source": 8,
+      "target": 107,
+      "value": 1
+    },
+    {
+      "source": 91,
+      "target": 116,
+      "value": 1
+    },
+    {
+      "source": 116,
+      "target": 115,
+      "value": 1
+    },
+    {
+      "source": 77,
+      "target": 77,
+      "value": 1
+    },
+    {
+      "source": 77,
+      "target": 121,
+      "value": 1
+    },
+    {
+      "source": 9,
+      "target": 15,
+      "value": 1
+    },
+    {
       "source": 15,
-      "target": 14,
+      "target": 9,
       "value": 1
     },
     {
-      "source": 19,
-      "target": 16,
+      "source": 39,
+      "target": 3,
       "value": 1
     },
     {
-      "source": 28,
-      "target": 14,
+      "source": 7,
+      "target": 40,
       "value": 1
     },
     {
-      "source": 32,
-      "target": 2,
+      "source": 2,
+      "target": 21,
+      "value": 1
+    },
+    {
+      "source": 93,
+      "target": 96,
+      "value": 1
+    },
+    {
+      "source": 96,
+      "target": 89,
+      "value": 1
+    },
+    {
+      "source": 94,
+      "target": 52,
       "value": 1
     },
     {
       "source": 20,
+      "target": 71,
+      "value": 1
+    },
+    {
+      "source": 66,
+      "target": 82,
+      "value": 1
+    },
+    {
+      "source": 60,
+      "target": 68,
+      "value": 1
+    },
+    {
+      "source": 83,
       "target": 0,
       "value": 1
     },
     {
+      "source": 66,
+      "target": 52,
+      "value": 1
+    },
+    {
+      "source": 27,
+      "target": 18,
+      "value": 1
+    },
+    {
       "source": 18,
-      "target": 11,
+      "target": 105,
+      "value": 1
+    },
+    {
+      "source": 24,
+      "target": 53,
+      "value": 1
+    },
+    {
+      "source": 84,
+      "target": 31,
+      "value": 1
+    },
+    {
+      "source": 31,
+      "target": 28,
+      "value": 1
+    },
+    {
+      "source": 52,
+      "target": 101,
+      "value": 1
+    },
+    {
+      "source": 81,
+      "target": 7,
+      "value": 1
+    },
+    {
+      "source": 48,
+      "target": 44,
+      "value": 1
+    },
+    {
+      "source": 52,
+      "target": 68,
+      "value": 1
+    },
+    {
+      "source": 74,
+      "target": 90,
+      "value": 1
+    },
+    {
+      "source": 13,
+      "target": 5,
+      "value": 1
+    },
+    {
+      "source": 67,
+      "target": 112,
+      "value": 1
+    },
+    {
+      "source": 66,
+      "target": 64,
+      "value": 1
+    },
+    {
+      "source": 64,
+      "target": 64,
+      "value": 1
+    },
+    {
+      "source": 106,
+      "target": 26,
+      "value": 1
+    },
+    {
+      "source": 52,
+      "target": 65,
       "value": 1
     },
     {
       "source": 14,
-      "target": 1,
+      "target": 14,
       "value": 1
     },
     {
-      "source": 18,
-      "target": 25,
+      "source": 14,
+      "target": 34,
+      "value": 1
+    },
+    {
+      "source": 69,
+      "target": 66,
       "value": 1
     },
     {
@@ -330,43 +704,73 @@
       "value": 1
     },
     {
-      "source": 36,
-      "target": 18,
+      "source": 66,
+      "target": 7,
       "value": 1
     },
     {
-      "source": 18,
-      "target": 23,
+      "source": 119,
+      "target": 38,
       "value": 1
     },
     {
-      "source": 19,
-      "target": 4,
+      "source": 38,
+      "target": 86,
       "value": 1
     },
     {
-      "source": 22,
-      "target": 19,
+      "source": 86,
+      "target": 86,
       "value": 1
     },
     {
-      "source": 14,
-      "target": 27,
+      "source": 114,
+      "target": 118,
       "value": 1
     },
     {
-      "source": 19,
-      "target": 21,
+      "source": 118,
+      "target": 97,
       "value": 1
     },
     {
-      "source": 15,
-      "target": 22,
+      "source": 12,
+      "target": 43,
       "value": 1
     },
     {
-      "source": 22,
-      "target": 23,
+      "source": 52,
+      "target": 11,
+      "value": 1
+    },
+    {
+      "source": 58,
+      "target": 52,
+      "value": 1
+    },
+    {
+      "source": 40,
+      "target": 40,
+      "value": 1
+    },
+    {
+      "source": 113,
+      "target": 108,
+      "value": 1
+    },
+    {
+      "source": 42,
+      "target": 41,
+      "value": 1
+    },
+    {
+      "source": 1,
+      "target": 30,
+      "value": 1
+    },
+    {
+      "source": 30,
+      "target": 79,
       "value": 1
     }
   ]

@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Career Paths – HIM Career Explorer</title>
+  <title>Career Pathways – Sankey Diagram</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #fff;
+      margin: 0;
     }
     nav {
       background:#222;
@@ -22,12 +21,10 @@
       margin-right:20px;
       text-decoration:none;
     }
-    .container {
-      padding: 30px;
-    }
     h1 {
-      color: #2c3e50;
       text-align: center;
+      color: #2c3e50;
+      margin-top: 20px;
     }
     #sankey {
       width: 100%;
@@ -39,7 +36,7 @@
       text-align: center;
       padding: 15px 10px;
       font-size: 14px;
-      margin-top: 50px;
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -51,27 +48,27 @@
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </nav>
-  <div class="container">
-    <h1>Career Transition Paths of HIM Graduates</h1>
-    <div id="sankey"></div>
-  </div>
+
+  <h1>Career Transition Paths of HIM Graduates</h1>
+  <div id="sankey"></div>
+
   <footer>
-    &copy; 2025 HIM Career Explorer | Designed for education and career visibility purposes.
+    &copy; 2025 HIM Career Explorer | Data-based transitions visualized for clarity.
   </footer>
 
   <script>
-    fetch('data/sankey_data.json')
-      .then(response => response.json())
+    fetch("data/sankey_data.json")
+      .then(res => res.json())
       .then(data => {
-        const trace = {
+        const sankey = {
           type: "sankey",
           orientation: "h",
           node: {
-            pad: 15,
+            pad: 20,
             thickness: 20,
             line: { color: "black", width: 0.5 },
-            label: data.nodes,
-            color: "#7d93e0"
+            label: data.nodes.map(n => n.name),
+            color: "#3B82F6"
           },
           link: {
             source: data.links.map(l => l.source),
@@ -82,10 +79,10 @@
 
         const layout = {
           font: { size: 14 },
-          margin: { l: 30, r: 30, t: 30, b: 30 }
+          margin: { l: 50, r: 50, t: 50, b: 50 },
         };
 
-        Plotly.newPlot('sankey', [trace], layout);
+        Plotly.newPlot("sankey", [sankey], layout);
       });
   </script>
 </body>
