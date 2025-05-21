@@ -43,4 +43,4 @@ with open("../template/index_template.html", "r", encoding="utf-8") as f:
 with open("../career_map.html", "w", encoding="utf-8") as f:
     f.write(template.replace("<!--DOT_CONTAINER-->", dot_divs))
 
-print("✅ career_map.html successfully generated with tooltips and filters.")
+print(" career_map.html successfully generated with tooltips and filters.")
