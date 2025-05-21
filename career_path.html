@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Career Path of HIM Graduates</title>
+  <meta charset="UTF-8">
+  <title>Career Path Explorer</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
     }
+
     nav {
       background: #222;
       padding: 10px 20px;
@@ -16,82 +17,92 @@
       top: 0;
       z-index: 999;
     }
+
     nav a {
       color: white;
       margin-right: 20px;
       text-decoration: none;
     }
-    h1 {
+
+    .container {
+      padding: 20px;
+    }
+
+    h2 {
       text-align: center;
-      padding: 20px 10px 0;
-      font-size: 26px;
       color: #2c3e50;
     }
+
     #sankey-container {
+      width: 100%;
+      height: 800px;
       overflow: scroll;
-      width: 100vw;
-      height: 90vh;
-    }
-    #sankey-chart {
-      width: 3000px;
-      height: 2000px;
-    }
-    footer {
-      background: #222;
-      color: #fff;
-      text-align: center;
-      padding: 15px 10px;
-      font-size: 14px;
+      border: 1px solid #ccc;
+      background: #fdfdfd;
+      padding: 10px;
+      box-sizing: border-box;
     }
   </style>
 </head>
 <body>
+
   <nav>
     <a href="index.html">Home</a>
     <a href="career_map.html">Career Map</a>
-    <a href="career_path.html">Career Path</a>
+    <a href="career_path.html">Career Paths</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </nav>
 
-  <h1>Career Transition Paths of HIM Graduates</h1>
-  <div id="sankey-container">
-    <div id="sankey-chart"></div>
+  <div class="container">
+    <h2>HIM Career Path Transitions</h2>
+    <div id="sankey-container">
+      <div id="sankey" style="min-width: 1400px; height: 1000px;"></div>
+    </div>
   </div>
-
-  <footer>
-    &copy; 2025 HIM Career Explorer | Based on Graduate Career Data
-  </footer>
 
   <script>
     fetch('data/sankey_data.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load Sankey data');
+        return response.json();
+      })
       .then(data => {
+        const nodes = data.nodes;
+        const links = data.links;
+
         const sankeyData = {
           type: "sankey",
           orientation: "h",
           node: {
+            label: nodes.map(n => n.name),
+            color: nodes.map(n => n.color),
             pad: 15,
             thickness: 20,
-            line: { color: "black", width: 0.5 },
-            label: data.nodes.map(n => n.name),
-            color: data.nodes.map((_, i) => `hsl(${(i * 47) % 360},70%,60%)`)
+            line: { color: "black", width: 0.5 }
           },
           link: {
-            source: data.links.map(l => l.source),
-            target: data.links.map(l => l.target),
-            value: data.links.map(l => l.value)
+            source: links.source,
+            target: links.target,
+            value: links.value
           }
         };
 
         const layout = {
-          margin: { l: 50, r: 50, t: 30, b: 20 },
-          font: { size: 14 }
+          title: "Career Progressions Based on HIM Survey",
+          font: { size: 13 },
+          height: 1000,
+          width: 1400,
+          margin: { l: 0, r: 0, t: 40, b: 0 }
         };
 
-        Plotly.newPlot('sankey-chart', [sankeyData], layout);
+        Plotly.newPlot('sankey', [sankeyData], layout, { responsive: true });
       })
-      .catch(err => console.error("Failed to load Sankey data:", err));
+      .catch(error => {
+        document.getElementById('sankey').innerText = error.message;
+        console.error(error);
+      });
   </script>
+
 </body>
 </html>
