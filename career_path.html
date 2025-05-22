@@ -47,7 +47,7 @@
     <div id="sankey"></div>
   </div>
   <div id="note">
-    <strong>Note:</strong> Nodes without links are shown in red. Hover over a position to see its transition effect.
+    <strong>Note:</strong> Nodes without links are shown in red. Hover over a position to see its transitions highlighted.
   </div>
 
   <script>
@@ -99,7 +99,8 @@
             target: data.links.map(l => l.target),
             value: data.links.map(l => l.value),
             hovertemplate: "%{source.label} → %{target.label}<br>Count: %{value}<extra></extra>",
-            color: "rgba(170,170,170,0.4)"
+            color: "rgba(170,170,170,0.4)",
+            opacity: 1
           }
         };
 
@@ -107,18 +108,40 @@
           const totalNodes = data.nodes.length;
           document.getElementById('sankey').on('plotly_hover', function(evt) {
             const nodeIndex = evt.points[0].pointNumber;
+            const connectedSources = [];
+            const connectedTargets = [];
+
+            data.links.forEach((link, i) => {
+              if (link.source === nodeIndex || link.target === nodeIndex) {
+                if (link.source === nodeIndex) connectedTargets.push(i);
+                if (link.target === nodeIndex) connectedSources.push(i);
+              }
+            });
+
+            const opacityArray = data.links.map((_, i) =>
+              connectedSources.includes(i) || connectedTargets.includes(i) ? 0.8 : 0.1
+            );
+
+            const linkColors = data.links.map((_, i) =>
+              connectedSources.includes(i) || connectedTargets.includes(i) ? "#ff3b3b" : "rgba(170,170,170,0.1)"
+            );
+
             Plotly.restyle('sankey', {
-              'node.line.width': [[...Array(totalNodes).fill(0.5).map((_, i) => i === nodeIndex ? 4 : 0.5)]],
-              'node.line.color': [[...Array(totalNodes).fill('black').map((_, i) => i === nodeIndex ? '#ff3b3b' : 'black')]],
-              'node.thickness': [[...Array(totalNodes).fill(30).map((v, i) => i === nodeIndex ? 40 : 30)]]
+              'link.color': [linkColors],
+              'link.opacity': [opacityArray],
+              'node.line.width': [[...Array(data.nodes.length).fill(0.5).map((_, i) => i === nodeIndex ? 4 : 0.5)]],
+              'node.line.color': [[...Array(data.nodes.length).fill('black').map((_, i) => i === nodeIndex ? '#ff3b3b' : 'black')]],
+              'node.thickness': [[...Array(data.nodes.length).fill(30).map((v, i) => i === nodeIndex ? 40 : 30)]]
             });
           });
 
           document.getElementById('sankey').on('plotly_unhover', function() {
             Plotly.restyle('sankey', {
-              'node.line.width': [[...Array(colors.length).fill(0.5)]],
+              'link.color': ["rgba(170,170,170,0.4)"],
+              'link.opacity': [1],
+              'node.line.width': [[...Array(data.nodes.length).fill(0.5)]],
               'node.line.color': [['black']],
-              'node.thickness': [[...Array(colors.length).fill(30)]]
+              'node.thickness': [[...Array(data.nodes.length).fill(30)]]
             });
           });
         });
