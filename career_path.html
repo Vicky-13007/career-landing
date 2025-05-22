@@ -24,7 +24,7 @@
     #sankey-container {
       overflow: scroll;
       width: 100vw;
-      height: 85vh;
+      height: 90vh;
       padding: 20px;
     }
     #note {
@@ -32,16 +32,6 @@
       font-size: 14px;
       background: #f9f9f9;
       border-top: 1px solid #ccc;
-    }
-    #fit-button {
-      margin: 10px 20px;
-      padding: 8px 16px;
-      font-size: 14px;
-      background: #2c3e50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -56,12 +46,9 @@
   <div id="sankey-container">
     <div id="sankey"></div>
   </div>
-  <div style="text-align:center">
-    <button id="fit-button">🔄 Fit to Screen</button>
-  </div>
   <div id="note">
     <strong>Note:</strong> Red = outgoing flows, Blue = incoming flows. Nodes without links are shown in red.<br>
-    <strong>Tip:</strong> Hold <kbd>Ctrl</kbd> (or <kbd>⌘ Command</kbd> on Mac) and scroll to zoom. Click and drag to pan. Use the button above to reset the view.
+    <strong>Tip:</strong> Hold <kbd>Ctrl</kbd> (or <kbd>⌘ Command</kbd> on Mac) and scroll to zoom. Click and drag to pan.
   </div>
 
   <script>
@@ -87,8 +74,8 @@
       layout = {
         title: "Career Path Transitions",
         font: { size: 12 },
-        height: 1800,
-        width: 2400,
+        width: 1800, // reduced width
+        height: Math.max(1200, data.nodes.length * 40), // scalable height
         margin: { t: 50, l: 50, r: 50, b: 50 },
       };
 
@@ -96,7 +83,7 @@
         type: "sankey",
         orientation: "h",
         node: {
-          pad: 20,
+          pad: 15,
           thickness: 30,
           line: { color: "black", width: 0.5 },
           label: data.nodes.map(n => n.name),
@@ -171,10 +158,6 @@
       .then(json => {
         data = json;
         renderSankey();
-
-        document.getElementById('fit-button').addEventListener('click', () => {
-          renderSankey();
-        });
       });
   </script>
 </body>
