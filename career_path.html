@@ -49,7 +49,7 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="career_map.html">Career Map</a>
-    <a href="career_path.html">Career Paths</a>
+    <a href="career_path.html">Career Path</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </nav>
@@ -65,9 +65,13 @@
   </div>
 
   <script>
+    let trace, layout, data;
+
     fetch('data/sankey_data.json')
       .then(response => response.json())
-      .then(data => {
+      .then(json => {
+        data = json;
+
         const linkedNames = new Set();
         data.links.forEach(link => {
           linkedNames.add(data.nodes[link.source].name);
@@ -83,7 +87,7 @@
             `${node.name}` : `${node.name} (No transitions)`
         );
 
-        const layout = {
+        layout = {
           title: "Career Path Transitions",
           font: { size: 12 },
           height: 1800,
@@ -91,7 +95,7 @@
           margin: { t: 50, l: 50, r: 50, b: 50 },
         };
 
-        const trace = {
+        trace = {
           type: "sankey",
           orientation: "h",
           node: {
@@ -165,9 +169,10 @@
           });
 
           document.getElementById('fit-button').addEventListener('click', () => {
-            Plotly.relayout('sankey', {
-              'xaxis.autorange': true,
-              'yaxis.autorange': true
+            Plotly.newPlot("sankey", [trace], layout, {
+              scrollZoom: true,
+              displayModeBar: true,
+              responsive: true
             });
           });
         });
