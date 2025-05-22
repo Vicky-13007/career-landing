@@ -47,7 +47,7 @@
     <div id="sankey"></div>
   </div>
   <div id="note">
-    <strong>Note:</strong> Some nodes are shown without links. These represent position categories that do not participate in transitions but are still part of the dataset. They are highlighted in <span style="color: #e74c3c; font-weight: bold;">red</span> for clarity.
+    <strong>Note:</strong> Nodes without links are shown in red. Hover over a position to see its transition effect.
   </div>
 
   <script>
@@ -72,7 +72,7 @@
         const layout = {
           title: "Career Path Transitions",
           font: { size: 12 },
-          height: 1200,
+          height: 1800,
           width: 2400,
           margin: { t: 50, l: 50, r: 50, b: 50 },
         };
@@ -81,13 +81,18 @@
           type: "sankey",
           orientation: "h",
           node: {
-            pad: 60,
+            pad: 20,
             thickness: 30,
-            line: { color: "black", width: 2.0 },
+            line: { color: "black", width: 0.5 },
             label: data.nodes.map(n => n.name),
             color: colors,
             hovertext: hoverTexts,
-            hoverinfo: 'text'
+            hoverinfo: 'text',
+            hoverlabel: {
+              bgcolor: "#f39c12",
+              bordercolor: "black",
+              font: { color: "black", size: 14 }
+            }
           },
           link: {
             source: data.links.map(l => l.source),
@@ -97,7 +102,26 @@
             color: "rgba(170,170,170,0.4)"
           }
         };
-        Plotly.newPlot("sankey", [trace], layout);
+
+        Plotly.newPlot("sankey", [trace], layout).then(() => {
+          const totalNodes = data.nodes.length;
+          document.getElementById('sankey').on('plotly_hover', function(evt) {
+            const nodeIndex = evt.points[0].pointNumber;
+            Plotly.restyle('sankey', {
+              'node.line.width': [[...Array(totalNodes).fill(0.5).map((_, i) => i === nodeIndex ? 4 : 0.5)]],
+              'node.line.color': [[...Array(totalNodes).fill('black').map((_, i) => i === nodeIndex ? '#ff3b3b' : 'black')]],
+              'node.thickness': [[...Array(totalNodes).fill(30).map((v, i) => i === nodeIndex ? 40 : 30)]]
+            });
+          });
+
+          document.getElementById('sankey').on('plotly_unhover', function() {
+            Plotly.restyle('sankey', {
+              'node.line.width': [[...Array(colors.length).fill(0.5)]],
+              'node.line.color': [['black']],
+              'node.thickness': [[...Array(colors.length).fill(30)]]
+            });
+          });
+        });
       })
       .catch(error => {
         document.getElementById("sankey").innerHTML = "<p style='color:red;'>Failed to load Sankey data. Check if data/sankey_data.json exists.</p>";
