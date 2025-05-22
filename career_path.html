@@ -24,7 +24,7 @@
     #sankey-container {
       overflow: scroll;
       width: 100vw;
-      height: 90vh;
+      height: 85vh;
       padding: 20px;
     }
     #note {
@@ -32,6 +32,16 @@
       font-size: 14px;
       background: #f9f9f9;
       border-top: 1px solid #ccc;
+    }
+    #fit-button {
+      margin: 10px 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -46,9 +56,12 @@
   <div id="sankey-container">
     <div id="sankey"></div>
   </div>
+  <div style="text-align:center">
+    <button id="fit-button">🔄 Fit to Screen</button>
+  </div>
   <div id="note">
-    <strong>Note:</strong> Nodes without links are shown in red. Hover over a position to see its transitions highlighted.<br>
-    <strong>Tip:</strong> Hold <kbd>Ctrl</kbd> (or <kbd>⌘ Command</kbd> on Mac) and scroll to zoom in/out. Click and drag to pan across the map.
+    <strong>Note:</strong> Red = outgoing flows, Blue = incoming flows. Nodes without links are shown in red.<br>
+    <strong>Tip:</strong> Hold <kbd>Ctrl</kbd> (or <kbd>⌘ Command</kbd> on Mac) and scroll to zoom. Click and drag to pan. Use the button above to reset the view.
   </div>
 
   <script>
@@ -111,32 +124,33 @@
           responsive: true
         }).then(() => {
           const totalNodes = data.nodes.length;
+
           document.getElementById('sankey').on('plotly_hover', function(evt) {
             const nodeIndex = evt.points[0].pointNumber;
-            const connectedSources = [];
-            const connectedTargets = [];
+            const incomingLinks = [];
+            const outgoingLinks = [];
 
             data.links.forEach((link, i) => {
-              if (link.source === nodeIndex || link.target === nodeIndex) {
-                if (link.source === nodeIndex) connectedTargets.push(i);
-                if (link.target === nodeIndex) connectedSources.push(i);
-              }
+              if (link.source === nodeIndex) outgoingLinks.push(i);
+              if (link.target === nodeIndex) incomingLinks.push(i);
             });
 
-            const opacityArray = data.links.map((_, i) =>
-              connectedSources.includes(i) || connectedTargets.includes(i) ? 0.8 : 0.1
-            );
+            const linkColors = data.links.map((_, i) => {
+              if (incomingLinks.includes(i)) return "#3498db"; // Blue for incoming
+              if (outgoingLinks.includes(i)) return "#e74c3c"; // Red for outgoing
+              return "rgba(170,170,170,0.1)";
+            });
 
-            const linkColors = data.links.map((_, i) =>
-              connectedSources.includes(i) || connectedTargets.includes(i) ? "#ff3b3b" : "rgba(170,170,170,0.1)"
+            const linkOpacities = data.links.map((_, i) =>
+              incomingLinks.includes(i) || outgoingLinks.includes(i) ? 0.85 : 0.1
             );
 
             Plotly.restyle('sankey', {
               'link.color': [linkColors],
-              'link.opacity': [opacityArray],
-              'node.line.width': [[...Array(data.nodes.length).fill(0.5).map((_, i) => i === nodeIndex ? 4 : 0.5)]],
-              'node.line.color': [[...Array(data.nodes.length).fill('black').map((_, i) => i === nodeIndex ? '#ff3b3b' : 'black')]],
-              'node.thickness': [[...Array(data.nodes.length).fill(30).map((v, i) => i === nodeIndex ? 40 : 30)]]
+              'link.opacity': [linkOpacities],
+              'node.line.width': [[...Array(totalNodes).fill(0.5).map((_, i) => i === nodeIndex ? 4 : 0.5)]],
+              'node.line.color': [[...Array(totalNodes).fill('black').map((_, i) => i === nodeIndex ? '#ff3b3b' : 'black')]],
+              'node.thickness': [[...Array(totalNodes).fill(30).map((v, i) => i === nodeIndex ? 40 : 30)]]
             });
           });
 
@@ -147,6 +161,13 @@
               'node.line.width': [[...Array(data.nodes.length).fill(0.5)]],
               'node.line.color': [['black']],
               'node.thickness': [[...Array(data.nodes.length).fill(30)]]
+            });
+          });
+
+          document.getElementById('fit-button').addEventListener('click', () => {
+            Plotly.relayout('sankey', {
+              'xaxis.autorange': true,
+              'yaxis.autorange': true
             });
           });
         });
