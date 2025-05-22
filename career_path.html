@@ -67,119 +67,114 @@
   <script>
     let trace, layout, data;
 
+    function renderSankey() {
+      const linkedNames = new Set();
+      data.links.forEach(link => {
+        linkedNames.add(data.nodes[link.source].name);
+        linkedNames.add(data.nodes[link.target].name);
+      });
+
+      const colors = data.nodes.map(node =>
+        linkedNames.has(node.name) ? `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)` : '#e74c3c'
+      );
+
+      const hoverTexts = data.nodes.map(node =>
+        linkedNames.has(node.name)
+          ? `${node.name}`
+          : `${node.name} (No transitions)`
+      );
+
+      layout = {
+        title: "Career Path Transitions",
+        font: { size: 12 },
+        height: 1800,
+        width: 2400,
+        margin: { t: 50, l: 50, r: 50, b: 50 },
+      };
+
+      trace = {
+        type: "sankey",
+        orientation: "h",
+        node: {
+          pad: 20,
+          thickness: 30,
+          line: { color: "black", width: 0.5 },
+          label: data.nodes.map(n => n.name),
+          color: colors,
+          hovertext: hoverTexts,
+          hoverinfo: 'text',
+          hoverlabel: {
+            bgcolor: "#f39c12",
+            bordercolor: "black",
+            font: { color: "black", size: 14 }
+          }
+        },
+        link: {
+          source: data.links.map(l => l.source),
+          target: data.links.map(l => l.target),
+          value: data.links.map(l => l.value),
+          hovertemplate: "%{source.label} → %{target.label}<br>Count: %{value}<extra></extra>",
+          color: "rgba(170,170,170,0.4)",
+          opacity: 1
+        }
+      };
+
+      Plotly.newPlot("sankey", [trace], layout, {
+        scrollZoom: true,
+        displayModeBar: true,
+        responsive: true
+      }).then(() => {
+        const totalNodes = data.nodes.length;
+
+        document.getElementById('sankey').on('plotly_hover', function(evt) {
+          const nodeIndex = evt.points[0].pointNumber;
+          const incomingLinks = [], outgoingLinks = [];
+
+          data.links.forEach((link, i) => {
+            if (link.source === nodeIndex) outgoingLinks.push(i);
+            if (link.target === nodeIndex) incomingLinks.push(i);
+          });
+
+          const linkColors = data.links.map((_, i) => {
+            if (incomingLinks.includes(i)) return "#3498db";
+            if (outgoingLinks.includes(i)) return "#e74c3c";
+            return "rgba(170,170,170,0.1)";
+          });
+
+          const linkOpacities = data.links.map((_, i) =>
+            incomingLinks.includes(i) || outgoingLinks.includes(i) ? 0.85 : 0.1
+          );
+
+          Plotly.restyle('sankey', {
+            'link.color': [linkColors],
+            'link.opacity': [linkOpacities],
+            'node.line.width': [[...Array(totalNodes).fill(0.5).map((_, i) => i === nodeIndex ? 4 : 0.5)]],
+            'node.line.color': [[...Array(totalNodes).fill('black').map((_, i) => i === nodeIndex ? '#ff3b3b' : 'black')]],
+            'node.thickness': [[...Array(totalNodes).fill(30).map((v, i) => i === nodeIndex ? 40 : 30)]]
+          });
+        });
+
+        document.getElementById('sankey').on('plotly_unhover', function() {
+          Plotly.restyle('sankey', {
+            'link.color': ["rgba(170,170,170,0.4)"],
+            'link.opacity': [1],
+            'node.line.width': [[...Array(data.nodes.length).fill(0.5)]],
+            'node.line.color': [['black']],
+            'node.thickness': [[...Array(data.nodes.length).fill(30)]]
+          });
+        });
+      });
+    }
+
     fetch('data/sankey_data.json')
       .then(response => response.json())
       .then(json => {
         data = json;
+        renderSankey();
 
-        const linkedNames = new Set();
-        data.links.forEach(link => {
-          linkedNames.add(data.nodes[link.source].name);
-          linkedNames.add(data.nodes[link.target].name);
+        document.getElementById('fit-button').addEventListener('click', () => {
+          renderSankey();
         });
-
-        const colors = data.nodes.map(node =>
-          linkedNames.has(node.name) ? `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)` : '#e74c3c'
-        );
-
-        const hoverTexts = data.nodes.map(node =>
-          linkedNames.has(node.name) ?
-            `${node.name}` : `${node.name} (No transitions)`
-        );
-
-        layout = {
-          title: "Career Path Transitions",
-          font: { size: 12 },
-          height: 1800,
-          width: 2400,
-          margin: { t: 50, l: 50, r: 50, b: 50 },
-        };
-
-        trace = {
-          type: "sankey",
-          orientation: "h",
-          node: {
-            pad: 20,
-            thickness: 30,
-            line: { color: "black", width: 0.5 },
-            label: data.nodes.map(n => n.name),
-            color: colors,
-            hovertext: hoverTexts,
-            hoverinfo: 'text',
-            hoverlabel: {
-              bgcolor: "#f39c12",
-              bordercolor: "black",
-              font: { color: "black", size: 14 }
-            }
-          },
-          link: {
-            source: data.links.map(l => l.source),
-            target: data.links.map(l => l.target),
-            value: data.links.map(l => l.value),
-            hovertemplate: "%{source.label} → %{target.label}<br>Count: %{value}<extra></extra>",
-            color: "rgba(170,170,170,0.4)",
-            opacity: 1
-          }
-        };
-
-        Plotly.newPlot("sankey", [trace], layout, {
-          scrollZoom: true,
-          displayModeBar: true,
-          responsive: true
-        }).then(() => {
-          const totalNodes = data.nodes.length;
-
-          document.getElementById('sankey').on('plotly_hover', function(evt) {
-            const nodeIndex = evt.points[0].pointNumber;
-            const incomingLinks = [];
-            const outgoingLinks = [];
-
-            data.links.forEach((link, i) => {
-              if (link.source === nodeIndex) outgoingLinks.push(i);
-              if (link.target === nodeIndex) incomingLinks.push(i);
-            });
-
-            const linkColors = data.links.map((_, i) => {
-              if (incomingLinks.includes(i)) return "#3498db"; // Blue for incoming
-              if (outgoingLinks.includes(i)) return "#e74c3c"; // Red for outgoing
-              return "rgba(170,170,170,0.1)";
-            });
-
-            const linkOpacities = data.links.map((_, i) =>
-              incomingLinks.includes(i) || outgoingLinks.includes(i) ? 0.85 : 0.1
-            );
-
-            Plotly.restyle('sankey', {
-              'link.color': [linkColors],
-              'link.opacity': [linkOpacities],
-              'node.line.width': [[...Array(totalNodes).fill(0.5).map((_, i) => i === nodeIndex ? 4 : 0.5)]],
-              'node.line.color': [[...Array(totalNodes).fill('black').map((_, i) => i === nodeIndex ? '#ff3b3b' : 'black')]],
-              'node.thickness': [[...Array(totalNodes).fill(30).map((v, i) => i === nodeIndex ? 40 : 30)]]
-            });
-          });
-
-          document.getElementById('sankey').on('plotly_unhover', function() {
-            Plotly.restyle('sankey', {
-              'link.color': ["rgba(170,170,170,0.4)"],
-              'link.opacity': [1],
-              'node.line.width': [[...Array(data.nodes.length).fill(0.5)]],
-              'node.line.color': [['black']],
-              'node.thickness': [[...Array(data.nodes.length).fill(30)]]
-            });
-          });
-
-          document.getElementById('fit-button').addEventListener('click', () => {
-            Plotly.newPlot("sankey", [trace], layout, {
-              scrollZoom: true,
-              displayModeBar: true,
-              responsive: true
-            });
-          });
-        });
-      })
-      .catch(error => {
-        document.getElementById("sankey").innerHTML = "<p style='color:red;'>Failed to load Sankey data. Check if data/sankey_data.json exists.</p>";
-        console.error(error);
       });
   </script>
 </body>
