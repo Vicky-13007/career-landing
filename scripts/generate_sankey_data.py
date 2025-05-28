@@ -3,7 +3,7 @@ import json
 import os
 
 # Load the dataset
-df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
+df = pd.read_csv("../data/categorized_data_files_with_position_periods.csv")
 
 # Validate necessary columns
 required_cols = {"ID_No", "Position_No", "Position_Category"}
