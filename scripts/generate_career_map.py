@@ -4,7 +4,7 @@ import re
 import os
 
 # Load the dataset
-df = pd.read_csv("../data/radial_data_split_domains_filtered.csv")
+df = pd.read_csv("../data/categorized_data_files_with_position_periods.csv")
 
 # Group by Position_Category and extract Domain and Career Level
 grouped = df.groupby("Position_Category").agg({

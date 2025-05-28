@@ -57,4 +57,4 @@ os.makedirs(os.path.dirname(out_path), exist_ok=True)
 with open(out_path, "w") as f:
     json.dump(sankey, f, indent=2)
 
-print(f"✅ Sankey data saved to {out_path}")
+print(f" Sankey data saved to {out_path}")
